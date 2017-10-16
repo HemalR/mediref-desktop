@@ -1,0 +1,30 @@
+{
+  "name": "mediref-desktop",
+  "version": "0.1.0",
+  "description": "Mediref on your Desktop!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "build",
+    "dist": "build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hemal Ruparelia",
+  "license": "ISC",
+  "dependencies": {
+    "electron-log": "^2.2.9",
+    "electron-updater": "^2.13.0"
+  },
+  "build": {
+    "appId": "com.mediref.desktop",
+    "productName": "Mediref",
+    "copyright" : "Copyright © 2018 Mediref",
+    "dmg": {
+      "title": "Mediref installer"
+    }
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13",
+    "electron-builder": "^19.37.2"
+  }
+}
