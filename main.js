@@ -34,6 +34,7 @@ app.on('ready', ()=>{
   });
   mainWindow.maximize();
   mainWindow.loadURL('http://localhost:3000/');
+  //Dummy comment to test auto-updater
 
   mainWindow.webContents.openDevTools();
 });
