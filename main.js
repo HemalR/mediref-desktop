@@ -1,6 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
-const {appUpdater} = require('./autoupdater');
 const fs = require('fs');
 
 //TODO Uncomment this when ready to log
@@ -19,17 +18,41 @@ ipcMain.on('file-handled', ()=>{
   fileToOpen = null;
 });
 
+
 app.on('will-finish-launching', ()=>{
   app.on('open-file', (event, path)=>{
     event.preventDefault();
     fileToOpen = path;
-  
+    
     if (mainWindow) {
       mainWindow.send('open-file', path);
     }
   })
 })
-
+function sendStatusToWindow(text) {
+  mainWindow.send('Updater', text);
+}
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('Update not available.');
+})
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow(`Error in auto-updater. ${err}`);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  sendStatusToWindow(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+});
 app.on('ready', ()=>{
   
   mainWindow = new BrowserWindow({
@@ -40,36 +63,11 @@ app.on('ready', ()=>{
   });
   mainWindow.maximize();
   mainWindow.loadURL('http://localhost:3000/');
-  // appUpdater(mainWindow);
 
+  autoUpdater.checkForUpdates();
   setTimeout(()=>{
     let version = app.getVersion();
-    mainWindow.send('Updater', `You are running v${version}`);
-    autoUpdater.checkForUpdates()
-    .then(res=>{
-      mainWindow.send('Updater', 'Checked for updates');		
-    });
-  
-  autoUpdater.on('update-downloaded', event => {
-    mainWindow.send('Updater', 'Update downloaded');
-    // Ask user to update the app
-    dialog.showMessageBox({
-      type: 'question',
-      buttons: ['Install and Relaunch', 'Install Later'],
-      defaultId: 0,
-      message: `A new update ${event.version} has been downloaded`,
-      detail: 'It will be installed the next time you restart the application'
-    }, response => {
-      if (response === 0) {
-        setTimeout(() => {
-          autoUpdater.quitAndInstall();
-          // force app to quit. This is just a workaround, ideally autoUpdater.quitAndInstall() should relaunch the app.
-          app.quit();
-        }, 1000);
-      }
-    });
-  });  
-  mainWindow.send('Updater', 'End of set timeout');  
+    mainWindow.send('Updater', `You are running v${version}`);  
   }, 5000)
 
   mainWindow.webContents.openDevTools();
