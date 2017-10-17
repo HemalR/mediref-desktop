@@ -6,7 +6,7 @@ const isDev = require('electron-is-dev');
 
 // const ConfigUtil = require('./../renderer/js/utils/config-util.js');
 
-function appUpdater() {
+function appUpdater(win) {
 	// Don't initiate auto-updates in development and on Linux system
 	// since autoUpdater doesn't work on Linux
 	if (isDev || process.platform === 'linux') {
@@ -32,7 +32,14 @@ function appUpdater() {
 
 	// Ask the user if update is available
 	// eslint-disable-next-line no-unused-vars
+	// Init for updates
+	autoUpdater.checkForUpdates()
+		.then(res=>{
+			win.send('Updater', 'Checked for updates');		
+		});
+
 	autoUpdater.on('update-downloaded', event => {
+		win.send('Updater', 'Update downloaded');
 		// Ask user to update the app
 		dialog.showMessageBox({
 			type: 'question',
@@ -50,8 +57,6 @@ function appUpdater() {
 			}
 		});
 	});
-	// Init for updates
-	autoUpdater.checkForUpdates();
 }
 
 module.exports = {

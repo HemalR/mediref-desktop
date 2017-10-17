@@ -32,7 +32,6 @@ app.on('will-finish-launching', ()=>{
 
 app.on('ready', ()=>{
   // autoUpdater.checkForUpdates();
-  appUpdater();
   mainWindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: false,
@@ -41,6 +40,11 @@ app.on('ready', ()=>{
   });
   mainWindow.maximize();
   mainWindow.loadURL('http://localhost:3000/');
+  appUpdater(mainWindow);
+  setTimeout(()=>{
+    let version = app.getVersion();
+    mainWindow.send('Updater', `You are running v${version}`);    
+  }, 5000)
   //Dummy comment to test auto-updater
 
   mainWindow.webContents.openDevTools();
