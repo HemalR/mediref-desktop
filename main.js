@@ -1,12 +1,12 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
+const log = require('electron-log');
 const fs = require('fs');
 
-//TODO Uncomment this when ready to log
-// const log = require('electron-log');
-// autoUpdater.logger = log;
-// autoUpdater.logger.transports.file.level = 'info';
-// log.info('App starting...');
+//Logging update stuff
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 var mainWindow = null;
 
@@ -30,6 +30,7 @@ app.on('will-finish-launching', ()=>{
   })
 })
 function sendStatusToWindow(text) {
+  log.info(text);
   mainWindow.send('Updater', text);
 }
 autoUpdater.on('checking-for-update', () => {
@@ -42,7 +43,8 @@ autoUpdater.on('update-not-available', (info) => {
   sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (err) => {
-  sendStatusToWindow(`Error in auto-updater. ${err}`);
+  log.info(err);
+  sendStatusToWindow(`Error in auto-updater.`);
 })
 autoUpdater.on('download-progress', (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
@@ -51,7 +53,8 @@ autoUpdater.on('download-progress', (progressObj) => {
   sendStatusToWindow(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
-  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+  sendStatusToWindow('Update downloaded; will install now');
+  autoUpdater.quitAndInstall();
 });
 app.on('ready', ()=>{
   
