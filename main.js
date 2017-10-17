@@ -1,5 +1,6 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
+const {appUpdater} = require('./autoupdater');
 
 //TODO Uncomment this when ready to log
 // const log = require('electron-log');
@@ -23,7 +24,8 @@ app.on('will-finish-launching', ()=>{
 })
 
 app.on('ready', ()=>{
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
+  appUpdater();
   mainWindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: false,
@@ -34,13 +36,6 @@ app.on('ready', ()=>{
   mainWindow.loadURL('http://localhost:3000/');
 
   mainWindow.webContents.openDevTools();
-
-  setTimeout(()=>{
-    mainWindow.send('open-file', 'This is from the ready handler');  
-  }, 5000)
-
-  fileToOpen = 'A string'
-  //TODO Set up auto-updater
 });
 
 //For Mac's where app has not quit even if all windows are 'closed'

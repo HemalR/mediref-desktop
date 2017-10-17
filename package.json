@@ -1,6 +1,10 @@
 {
   "name": "mediref-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HemalR/mediref-desktop.git"
+  },
   "description": "Mediref on your Desktop!",
   "main": "main.js",
   "scripts": {
@@ -12,15 +16,46 @@
   "author": "Hemal Ruparelia",
   "license": "ISC",
   "dependencies": {
+    "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.9",
     "electron-updater": "^2.13.0"
   },
   "build": {
     "appId": "com.mediref.desktop",
+    "asar": true,
     "productName": "Mediref",
-    "copyright" : "Copyright © 2018 Mediref",
+    "copyright": "Copyright © 2018 Mediref",
+    "fileAssociations": [
+      {
+        "ext": [
+          "jpg",
+          "jpeg",
+          "png",
+          "PNG",
+          "tiff"
+        ],
+        "description": "Image files",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "pdf",
+          "PDF",
+          "jpg",
+          "jpeg",
+          "png",
+          "PNG"
+        ],
+        "description": "PDF files",
+        "role": "Viewer"
+      }
+    ],
     "dmg": {
       "title": "Mediref installer"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "type": "distribution"
     }
   },
   "devDependencies": {
