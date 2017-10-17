@@ -5,8 +5,6 @@ const { autoUpdater } = require('electron-updater');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
 
-const ConfigUtil = require('./../renderer/js/utils/config-util.js');
-
 function appUpdater() {
 	// Don't initiate auto-updates in development and on Linux system
 	// since autoUpdater doesn't work on Linux
