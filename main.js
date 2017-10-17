@@ -31,7 +31,7 @@ app.on('will-finish-launching', ()=>{
 })
 
 app.on('ready', ()=>{
-  // autoUpdater.checkForUpdates();
+  
   mainWindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: false,
@@ -40,12 +40,37 @@ app.on('ready', ()=>{
   });
   mainWindow.maximize();
   mainWindow.loadURL('http://localhost:3000/');
-  appUpdater(mainWindow);
+  // appUpdater(mainWindow);
+
   setTimeout(()=>{
     let version = app.getVersion();
-    mainWindow.send('Updater', `You are running v${version}`);    
+    mainWindow.send('Updater', `You are running v${version}`);
+    autoUpdater.checkForUpdates()
+    .then(res=>{
+      mainWindow.send('Updater', 'Checked for updates');		
+    });
+  
+  autoUpdater.on('update-downloaded', event => {
+    mainWindow.send('Updater', 'Update downloaded');
+    // Ask user to update the app
+    dialog.showMessageBox({
+      type: 'question',
+      buttons: ['Install and Relaunch', 'Install Later'],
+      defaultId: 0,
+      message: `A new update ${event.version} has been downloaded`,
+      detail: 'It will be installed the next time you restart the application'
+    }, response => {
+      if (response === 0) {
+        setTimeout(() => {
+          autoUpdater.quitAndInstall();
+          // force app to quit. This is just a workaround, ideally autoUpdater.quitAndInstall() should relaunch the app.
+          app.quit();
+        }, 1000);
+      }
+    });
+  });  
+  mainWindow.send('Updater', 'End of set timeout');  
   }, 5000)
-  //Dummy comment to test auto-updater
 
   mainWindow.webContents.openDevTools();
 });
