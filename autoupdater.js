@@ -4,7 +4,7 @@ const { app, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const isDev = require('electron-is-dev');
 
-const ConfigUtil = require('./../renderer/js/utils/config-util.js');
+// const ConfigUtil = require('./../renderer/js/utils/config-util.js');
 
 function appUpdater() {
 	// Don't initiate auto-updates in development and on Linux system

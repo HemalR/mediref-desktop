@@ -1,6 +1,7 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
 const {appUpdater} = require('./autoupdater');
+const fs = require('fs');
 
 //TODO Uncomment this when ready to log
 // const log = require('electron-log');
@@ -10,7 +11,13 @@ const {appUpdater} = require('./autoupdater');
 
 var mainWindow = null;
 
-global.fileToOpen = null; //Declare a global file variable to hold file path if a file is opened while the app is closed
+global.fileToOpen = null; //Declare a global empty object variable to hold file path if a file is opened while the app is closed
+
+
+//Clear the global fileToOpen variable once Mediref app renderer process has handled the file
+ipcMain.on('file-handled', ()=>{
+  fileToOpen = null;
+});
 
 app.on('will-finish-launching', ()=>{
   app.on('open-file', (event, path)=>{
@@ -50,10 +57,6 @@ app.on('activate', ()=>{
 process.on('uncaughtException', (err)=>{
   console.log(`Application exited with error: ${err}`);
 });
-
-ipcMain.on('ping', (event, arg)=>{
-  event.sender.send('pong')
-})
 
 //Quit app if all windows are closed
 app.on('window-all-closed', () => {
