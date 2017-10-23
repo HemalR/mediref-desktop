@@ -1,6 +1,6 @@
 {
   "name": "mediref-desktop",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "repository": {
     "type": "git",
     "url": "https://github.com/HemalR/mediref-desktop.git"
@@ -18,7 +18,8 @@
   "dependencies": {
     "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.9",
-    "electron-updater": "^2.13.0"
+    "electron-updater": "^2.13.0",
+    "mime": "^2.0.3"
   },
   "build": {
     "appId": "com.mediref.desktop",
