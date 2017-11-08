@@ -8,10 +8,11 @@
   "description": "Mediref on your Desktop!",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron main.js",
     "pack": "build",
     "dist": "build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack_windows" : "build --win --x64 --ia32"
   },
   "author": "Hemal Ruparelia",
   "license": "ISC",
@@ -26,7 +27,13 @@
     "asar": true,
     "productName": "Mediref",
     "copyright": "Copyright © 2018 Mediref",
-    "fileAssociations": [
+    "dmg": {
+      "title": "Mediref installer"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "type": "distribution",
+      "fileAssociations": [
       {
         "ext": [
           "jpg",
@@ -50,18 +57,34 @@
         "description": "PDF files",
         "role": "Viewer"
       }
-    ],
+     ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  },
+  "win": {
+    "perMachine": true,
+    "appId": "com.mediref.desktop",
+    "asar": false,
+    "productName": "Mediref",
+    "copyright": "Copyright © 2018 Mediref",
     "dmg": {
       "title": "Mediref installer"
     },
     "mac": {
       "category": "public.app-category.business",
       "type": "distribution"
+    },
+    "win":{
+      "target": ["nsis"]
     }
   },
   "devDependencies": {
     "electron": "^1.7.9",
-    "electron-prebuilt": "^1.4.13",
-    "electron-builder": "^19.37.2"
+    "electron-builder": "^19.43.4",
+    "electron-prebuilt": "^1.4.13"
   }
 }

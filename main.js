@@ -45,8 +45,14 @@ app.on("ready", () => {
       preload: __dirname + "/preload.js"
     }
   });
+
+   var filePath = process.argv[1];
+   if(filePath != undefined){
+     handleFilePath(filePath);
+   }
+
   mainWindow.maximize();
-  mainWindow.loadURL("http://localhost:3000/");
+  mainWindow.loadURL("https://dev5.mediref.com.au/new");
 
   appUpdater(mainWindow);
 
