@@ -46,7 +46,7 @@ app.on('ready', () => {
 		},
 	});
 
-	var filePath = process.argv[1];
+	const filePath = process.argv[1];
 	if (filePath != undefined) {
 		handleFilePath(filePath);
 	}
