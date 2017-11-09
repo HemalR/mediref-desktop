@@ -60,26 +60,11 @@
      ]
     },
     "win": {
-      "target": [
-        "nsis"
-      ]
-    }
-  },
-  "win": {
-    "perMachine": true,
-    "appId": "com.mediref.desktop",
-    "asar": false,
-    "productName": "Mediref",
-    "copyright": "Copyright © 2018 Mediref",
-    "dmg": {
-      "title": "Mediref installer"
+      "target":  "nsis"
     },
-    "mac": {
-      "category": "public.app-category.business",
-      "type": "distribution"
-    },
-    "win":{
-      "target": ["nsis"]
+    "nsis": {
+      "oneClick": true,
+      "runAfterFinish": false
     }
   },
   "devDependencies": {
