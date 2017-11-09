@@ -1,64 +1,52 @@
 {
-  "name": "mediref-desktop",
-  "version": "0.1.13",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/HemalR/mediref-desktop.git"
-  },
-  "description": "Mediref on your Desktop!",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron main.js",
-    "pack": "build",
-    "dist": "build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pack_windows" : "build --win --x64 --ia32"
-  },
-  "author": "Hemal Ruparelia",
-  "license": "ISC",
-  "dependencies": {
-    "electron-is-dev": "^0.3.0",
-    "electron-log": "^2.2.9",
-    "electron-updater": "^2.13.0",
-    "mime": "^2.0.3"
-  },
-  "build": {
-    "appId": "com.mediref.desktop",
-    "asar": true,
-    "productName": "Mediref",
-    "copyright": "Copyright © 2018 Mediref",
-    "dmg": {
-      "title": "Mediref installer"
-    },
-    "mac": {
-      "category": "public.app-category.business",
-      "type": "distribution",
-      "fileAssociations": [
-      {
-        "ext": [
-          "jpg",
-          "jpeg",
-          "png",
-          "PNG",
-          "tiff"
-        ],
-        "description": "Image files",
-        "role": "Viewer"
-      },
-      {
-        "ext": [
-          "pdf",
-          "PDF",
-          "jpg",
-          "jpeg",
-          "png",
-          "PNG"
-        ],
-        "description": "PDF files",
-        "role": "Viewer"
-      }
-     ]
-    },
+	"name": "mediref-desktop",
+	"version": "0.1.15",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HemalR/mediref-desktop.git"
+	},
+	"description": "Mediref on your Desktop!",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron main.js",
+		"pack": "build",
+		"dist": "build",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"pack_windows": "build --win --x64 --ia32",
+		"publish": "build --mac --win -p always"
+	},
+	"author": "Hemal Ruparelia",
+	"license": "ISC",
+	"dependencies": {
+		"electron-is-dev": "^0.3.0",
+		"electron-log": "^2.2.9",
+		"electron-updater": "^2.13.0",
+		"mime": "^2.0.3"
+	},
+	"build": {
+		"appId": "com.mediref.desktop",
+		"asar": true,
+		"productName": "Mediref",
+		"copyright": "Copyright © 2018 Mediref",
+		"dmg": {
+			"title": "Mediref installer"
+		},
+		"mac": {
+			"category": "public.app-category.business",
+			"type": "distribution",
+			"fileAssociations": [
+				{
+					"ext": ["jpg", "jpeg", "png", "PNG", "tiff"],
+					"description": "Image files",
+					"role": "Viewer"
+				},
+				{
+					"ext": ["pdf", "PDF", "jpg", "jpeg", "png", "PNG"],
+					"description": "PDF files",
+					"role": "Viewer"
+				}
+			]
+		},
     "win": {
       "target":  "nsis"
     },
@@ -66,10 +54,10 @@
       "oneClick": true,
       "runAfterFinish": false
     }
-  },
-  "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-builder": "^19.43.4",
-    "electron-prebuilt": "^1.4.13"
-  }
+	},
+	"devDependencies": {
+		"electron": "^1.7.9",
+		"electron-builder": "^19.43.4",
+		"electron-prebuilt": "^1.4.13"
+	}
 }
