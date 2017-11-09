@@ -5,6 +5,7 @@ const mime = require('mime');
 const path = require('path');
 const log = require('electron-log');
 const platform = require('./platform');
+const isDev = require('electron-is-dev');
 
 let mainWindow = null;
 
@@ -55,7 +56,11 @@ app.on('ready', () => {
 	}
 
 	mainWindow.maximize();
-	mainWindow.loadURL('https://dev5.mediref.com.au/');
+	if (isDev) {
+		mainWindow.loadURL('http://localhost:3000/');
+	} else {
+		mainWindow.loadURL('https://dev5.mediref.com.au/');
+	}
 
 	appUpdater(mainWindow);
 
@@ -115,4 +120,15 @@ process.on('uncaughtException', err => {
 //Quit app if all windows are closed
 app.on('window-all-closed', () => {
 	app.quit();
+});
+
+ipcMain.on('view-pdf', (event, url) => {
+	const pdfWindow = new BrowserWindow({
+		width: 1024,
+		height: 800,
+		webPreferences: {
+			plugins: true,
+		},
+	});
+	pdfWindow.loadURL(url);
 });
