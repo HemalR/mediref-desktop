@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "0.1.16",
+	"version": "0.1.17",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -47,13 +47,13 @@
 				}
 			]
 		},
-    "win": {
-      "target":  "nsis"
-    },
-    "nsis": {
-      "oneClick": true,
-      "runAfterFinish": false
-    }
+		"win": {
+			"target": "nsis"
+		},
+		"nsis": {
+			"oneClick": true,
+			"runAfterFinish": false
+		}
 	},
 	"devDependencies": {
 		"electron": "^1.7.9",

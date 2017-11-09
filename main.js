@@ -4,6 +4,7 @@ const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
 const log = require('electron-log');
+const platform = require('./platform');
 
 let mainWindow = null;
 
@@ -46,19 +47,22 @@ app.on('ready', () => {
 		},
 	});
 
-	const filePath = process.argv[2];
-	if (filePath != undefined) {
-		handleFilePath(filePath);
+	if (platform.isWindows) {
+		const filePath = process.argv[2];
+		if (filePath != undefined) {
+			handleFilePath(filePath);
+		}
 	}
 
 	mainWindow.maximize();
-	mainWindow.loadURL('https://dev5.mediref.com.au/new');
+	mainWindow.loadURL('https://dev5.mediref.com.au/');
 
 	appUpdater(mainWindow);
 
 	setTimeout(() => {
 		let version = app.getVersion();
 		mainWindow.send('Updater', `You are running v${version}`);
+		mainWindow.send('Updater', `Your OS: ${platform.name}`);
 	}, 5000);
 
 	mainWindow.webContents.openDevTools();
