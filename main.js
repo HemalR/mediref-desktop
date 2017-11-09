@@ -46,7 +46,11 @@ app.on('ready', () => {
 		},
 	});
 
-  //  var filePath = process.argv[2];
+  var filePath = process.argv[2];
+  if(filePath != undefined){
+      handleFilePath(filePath);
+  }
+
 
 	mainWindow.maximize();
 	mainWindow.loadURL('https://dev5.mediref.com.au/new');
