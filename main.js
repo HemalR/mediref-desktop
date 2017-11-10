@@ -33,6 +33,23 @@ function handleFilePath(filePath) {
 	return fileData;
 }
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus();
+        console.log(commandLine[2]);
+        var filePath = commandLine[2];
+        if(filePath != undefined){
+          handleFilePath(filePath);
+        }
+    }
+});
+
+if (shouldQuit) {
+    app.quit();
+}
+
 app.on('will-finish-launching', () => {
 	app.on('open-file', (event, filePath) => {
 		event.preventDefault();
@@ -46,8 +63,7 @@ app.on('ready', () => {
 			nodeIntegration: false,
 			preload: __dirname + '/preload.js',
 		},
-	});
-
+	}); 
 	if (platform.isWindows) {
 		const filePath = process.argv[2];
 		if (filePath != undefined) {
@@ -56,10 +72,11 @@ app.on('ready', () => {
 	}
 
 	mainWindow.maximize();
+
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000/');
 	} else {
-		mainWindow.loadURL('https://dev5.mediref.com.au/');
+		mainWindow.loadURL('https://dev5.mediref.com.au/new');
 	}
 
 	appUpdater(mainWindow);
