@@ -76,7 +76,7 @@ app.on('ready', () => {
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000/');
 	} else {
-		mainWindow.loadURL('https://dev5.mediref.com.au/new');
+		mainWindow.loadURL('https://new.mediref.com.au/new');
 	}
 
 	appUpdater(mainWindow);
@@ -87,7 +87,7 @@ app.on('ready', () => {
 		mainWindow.send('Updater', `Your OS: ${platform.name}`);
 	}, 5000);
 
-	mainWindow.webContents.openDevTools();
+	// mainWindow.webContents.openDevTools();
 
 	// Create the Application's main menu
 	const menuTemplate = [
