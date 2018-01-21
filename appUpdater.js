@@ -3,7 +3,7 @@ const fs = require('fs');
 const { app, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const isDev = require('electron-is-dev');
-const log = require('electron-log');
+const log = require('electron-log'); //open ~/Library/Logs/mediref-desktop/log.log (may have to use 'open')
 
 function appUpdater(mainWindow) {
 	// Don't initiate auto-updates in development and on Linux system

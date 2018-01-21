@@ -10,19 +10,18 @@ const isDev = require('electron-is-dev');
 let mainWindow = null;
 
 global.fileToOpen = null; //Declare a global empty object variable to hold file path if a file is opened while the app is closed
+global.gp = null;
 
 //Clear the global fileToOpen variable once Mediref app renderer process has handled the file
 ipcMain.on('file-handled', () => {
 	fileToOpen = null;
 });
 
-//Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if windown open
+//Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
 function handleFilePath(filePath) {
-	mainWindow.send('Updater', 'Began handleFilePath line 18 of main.js');
+	gp = filePath;
 	const name = path.basename(filePath);
-	mainWindow.send('Updater', `Filename is ${name}`);
 	const type = mime.getType(filePath);
-	mainWindow.send('Updater', `Filetype is ${type}`);
 	const data = fs.readFileSync(filePath, 'base64');
 	const fileData = { name, data, type, path: filePath };
 	fileToOpen = fileData;
@@ -34,20 +33,20 @@ function handleFilePath(filePath) {
 }
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (mainWindow) {
-        if (mainWindow.isMinimized()) mainWindow.restore()
-        mainWindow.focus();
-        console.log(commandLine[2]);
-        var filePath = commandLine[2];
-        if(filePath != undefined){
-          handleFilePath(filePath);
-        }
-    }
+	// Someone tried to run a second instance, we should focus our window.
+	if (mainWindow) {
+		if (mainWindow.isMinimized()) mainWindow.restore();
+		mainWindow.focus();
+		console.log(commandLine[2]);
+		const filePath = commandLine[2];
+		if (filePath != undefined) {
+			handleFilePath(filePath);
+		}
+	}
 });
 
 if (shouldQuit) {
-    app.quit();
+	app.quit();
 }
 
 app.on('will-finish-launching', () => {
@@ -63,7 +62,7 @@ app.on('ready', () => {
 			nodeIntegration: false,
 			preload: __dirname + '/preload.js',
 		},
-	}); 
+	});
 	if (platform.isWindows) {
 		const filePath = process.argv[2];
 		if (filePath != undefined) {
@@ -71,13 +70,14 @@ app.on('ready', () => {
 		}
 	}
 
-	mainWindow.maximize();
-
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000/');
+		mainWindow.webContents.openDevTools();
 	} else {
 		mainWindow.loadURL('https://new.mediref.com.au/new');
 	}
+
+	mainWindow.maximize();
 
 	appUpdater(mainWindow);
 
@@ -86,8 +86,6 @@ app.on('ready', () => {
 		mainWindow.send('Updater', `You are running v${version}`);
 		mainWindow.send('Updater', `Your OS: ${platform.name}`);
 	}, 5000);
-
-	// mainWindow.webContents.openDevTools();
 
 	// Create the Application's main menu
 	const menuTemplate = [
@@ -145,6 +143,7 @@ ipcMain.on('view-pdf', (event, url) => {
 		height: 800,
 		webPreferences: {
 			plugins: true,
+			webSecurity: false,
 		},
 	});
 	pdfWindow.loadURL(url);
