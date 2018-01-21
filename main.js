@@ -69,6 +69,7 @@ app.on('ready', () => {
 			handleFilePath(filePath);
 		}
 	}
+	mainWindow.maximize();
 
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000/');
@@ -76,8 +77,6 @@ app.on('ready', () => {
 	} else {
 		mainWindow.loadURL('https://new.mediref.com.au/new');
 	}
-
-	mainWindow.maximize();
 
 	appUpdater(mainWindow);
 
