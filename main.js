@@ -8,6 +8,8 @@ const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 
+require('electron-context-menu')();
+
 let mainWindow = null;
 
 global.fileToOpen = null; //Declare a global empty object variable to hold file path if a file is opened while the app is closed

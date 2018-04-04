@@ -18,6 +18,7 @@
 	"author": "Hemal Ruparelia",
 	"license": "ISC",
 	"dependencies": {
+		"electron-context-menu": "^0.9.1",
 		"electron-is-dev": "^0.3.0",
 		"electron-log": "^2.2.9",
 		"electron-updater": "^2.13.0",
@@ -36,12 +37,25 @@
 			"type": "distribution",
 			"fileAssociations": [
 				{
-					"ext": ["jpg", "jpeg", "png", "PNG", "tiff"],
+					"ext": [
+						"jpg",
+						"jpeg",
+						"png",
+						"PNG",
+						"tiff"
+					],
 					"description": "Image files",
 					"role": "Viewer"
 				},
 				{
-					"ext": ["pdf", "PDF", "jpg", "jpeg", "png", "PNG"],
+					"ext": [
+						"pdf",
+						"PDF",
+						"jpg",
+						"jpeg",
+						"png",
+						"PNG"
+					],
 					"description": "PDF files",
 					"role": "Viewer"
 				}
