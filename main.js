@@ -1,11 +1,12 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
-const { appUpdater } = require('./appUpdater');
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
 const log = require('electron-log');
-const platform = require('./platform');
 const isDev = require('electron-is-dev');
+const { appUpdater } = require('./appUpdater');
+const platform = require('./platform');
+const { setMenu } = require('./menuTemplate');
 
 let mainWindow = null;
 
@@ -86,37 +87,7 @@ app.on('ready', () => {
 		mainWindow.send('Updater', `Your OS: ${platform.name}`);
 	}, 5000);
 
-	// Create the Application's main menu
-	const menuTemplate = [
-		{
-			label: 'Mediref',
-			submenu: [
-				{ label: 'About Mediref', selector: 'orderFrontStandardAboutPanel:' },
-				{ type: 'separator' },
-				{
-					label: 'Quit',
-					accelerator: 'CmdOrCtrl+Q',
-					click: function() {
-						app.quit();
-					},
-				},
-			],
-		},
-		{
-			label: 'Edit',
-			submenu: [
-				{ label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
-				{ label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
-				{ type: 'separator' },
-				{ label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-				{ label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-				{ label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
-				{ label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' },
-			],
-		},
-	];
-
-	Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
+	setMenu(app);
 });
 
 //For Mac's where app has not quit even if all windows are 'closed'
