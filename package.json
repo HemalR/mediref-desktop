@@ -13,7 +13,7 @@
 		"dist": "build",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"pack_windows": "build --win --x64 --ia32",
-		"publish": "build --mac --win -p always"
+		"pub": "build --mac --win -p always"
 	},
 	"author": "Hemal Ruparelia",
 	"license": "ISC",
@@ -21,7 +21,7 @@
 		"electron-context-menu": "^0.9.1",
 		"electron-is-dev": "^0.3.0",
 		"electron-log": "^2.2.9",
-		"electron-updater": "^2.13.0",
+		"electron-updater": "^2.21.4",
 		"mime": "^2.0.3"
 	},
 	"build": {
@@ -30,7 +30,7 @@
 		"productName": "Mediref",
 		"copyright": "Copyright © 2018 Mediref",
 		"dmg": {
-			"title": "Mediref installer"
+			"title": "Mediref"
 		},
 		"mac": {
 			"category": "public.app-category.business",
@@ -42,7 +42,7 @@
 					"role": "Viewer"
 				},
 				{
-					"ext": ["pdf", "PDF", "jpg", "jpeg", "png", "PNG"],
+					"ext": ["pdf", "PDF"],
 					"description": "PDF files",
 					"role": "Viewer"
 				}
