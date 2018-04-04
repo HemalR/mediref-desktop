@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "0.1.19",
+	"version": "0.1.20",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -37,25 +37,12 @@
 			"type": "distribution",
 			"fileAssociations": [
 				{
-					"ext": [
-						"jpg",
-						"jpeg",
-						"png",
-						"PNG",
-						"tiff"
-					],
+					"ext": ["jpg", "jpeg", "png", "PNG", "tiff"],
 					"description": "Image files",
 					"role": "Viewer"
 				},
 				{
-					"ext": [
-						"pdf",
-						"PDF",
-						"jpg",
-						"jpeg",
-						"png",
-						"PNG"
-					],
+					"ext": ["pdf", "PDF", "jpg", "jpeg", "png", "PNG"],
 					"description": "PDF files",
 					"role": "Viewer"
 				}
