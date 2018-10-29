@@ -20,9 +20,9 @@
 	"dependencies": {
 		"electron-context-menu": "^0.9.1",
 		"electron-is-dev": "^0.3.0",
-		"electron-log": "^2.2.9",
-		"electron-updater": "^2.21.4",
-		"mime": "^2.0.3"
+		"electron-log": "^2.2.17",
+		"electron-updater": "^2.23.3",
+		"mime": "^2.3.1"
 	},
 	"build": {
 		"appId": "com.mediref.desktop",
@@ -37,12 +37,21 @@
 			"type": "distribution",
 			"fileAssociations": [
 				{
-					"ext": ["jpg", "jpeg", "png", "PNG", "tiff"],
+					"ext": [
+						"jpg",
+						"jpeg",
+						"png",
+						"PNG",
+						"tiff"
+					],
 					"description": "Image files",
 					"role": "Viewer"
 				},
 				{
-					"ext": ["pdf", "PDF"],
+					"ext": [
+						"pdf",
+						"PDF"
+					],
 					"description": "PDF files",
 					"role": "Viewer"
 				}
@@ -52,12 +61,13 @@
 			"target": "nsis"
 		},
 		"nsis": {
-			"oneClick": true,
-			"runAfterFinish": false
+			"oneClick": false,
+			"runAfterFinish": true,
+			"allowToChangeInstallationDirectory": true
 		}
 	},
 	"devDependencies": {
-		"electron": "^1.8.4",
+		"electron": "^1.8.8",
 		"electron-builder": "^19.43.4",
 		"electron-prebuilt": "^1.4.13"
 	}
