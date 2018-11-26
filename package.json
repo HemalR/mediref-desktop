@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "0.1.20",
+	"version": "0.1.21",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -15,7 +15,7 @@
 		"pack_windows": "build --win --x64 --ia32",
 		"pub": "build --mac --win -p always"
 	},
-	"author": "Hemal Ruparelia",
+	"author": "Mediref",
 	"license": "ISC",
 	"dependencies": {
 		"electron-context-menu": "^0.10.1",
@@ -28,7 +28,7 @@
 		"appId": "com.mediref.desktop",
 		"asar": true,
 		"productName": "Mediref",
-		"copyright": "Copyright © 2018 Mediref",
+		"copyright": "Copyright © 2019 Mediref",
 		"dmg": {
 			"title": "Mediref"
 		},
