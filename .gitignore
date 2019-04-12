@@ -1,3 +1,5 @@
 node_modules
 dist/
 mediref-desktop-v0.1.20.tgz
+certificates
+electron-builder.env
