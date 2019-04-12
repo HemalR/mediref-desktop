@@ -21,6 +21,7 @@
 		"electron-context-menu": "^0.10.1",
 		"electron-is-dev": "^1.0.1",
 		"electron-log": "^2.2.17",
+		"electron-pdf-window": "^1.0.12",
 		"electron-updater": "^4.0.4",
 		"mime": "^2.3.1"
 	},
@@ -30,7 +31,9 @@
 		"productName": "Mediref",
 		"copyright": "Copyright © 2019 Mediref",
 		"dmg": {
-			"title": "Mediref"
+			"title": "Mediref",
+			"backgroundColor": "#478EBC",
+			"icon": "build/icon.png"
 		},
 		"mac": {
 			"category": "public.app-category.business",
@@ -67,7 +70,7 @@
 		}
 	},
 	"devDependencies": {
-		"electron": "^3.0.10",
+		"electron": "^2.0.18",
 		"electron-builder": "^20.36.2",
 		"electron-prebuilt": "^1.4.13"
 	}
