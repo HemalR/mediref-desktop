@@ -4,7 +4,7 @@ const mime = require('mime');
 const path = require('path');
 const log = require('electron-log');
 const isDev = require('electron-is-dev');
-const { appUpdater } = require('./appUpdater');
+const { appUpdater, sendStatusToWindow } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 
@@ -31,7 +31,7 @@ function handleFilePath(filePath) {
 	if (mainWindow) {
 		mainWindow.send('open-file', fileData);
 	}
-	mainWindow.send('Updater', 'Ending handleFilePath line 35 of main.js');
+	sendStatusToWindow(`File path to upload: ${filePath}`);
 	return fileData;
 }
 
@@ -76,12 +76,13 @@ app.on('ready', () => {
 	}
 	mainWindow.maximize();
 
-	if (isDev) {
-		mainWindow.loadURL('http://localhost:3000/');
-		mainWindow.webContents.openDevTools();
-	} else {
-		mainWindow.loadURL('https://new.mediref.com.au/new');
-	}
+	// if (isDev) {
+	// 	mainWindow.loadURL('http://localhost:3000/');
+	// 	mainWindow.webContents.openDevTools();
+	// } else {
+	// 	mainWindow.loadURL('https://new.mediref.com.au/new');
+	// }
+	mainWindow.loadURL('https://www.mediref.com.au/new');
 
 	appUpdater(mainWindow);
 
