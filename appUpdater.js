@@ -73,5 +73,4 @@ function appUpdater(mainWindow) {
 
 module.exports = {
 	appUpdater,
-	sendStatusToWindow,
 };

@@ -4,7 +4,7 @@ const mime = require('mime');
 const path = require('path');
 const log = require('electron-log');
 const isDev = require('electron-is-dev');
-const { appUpdater, sendStatusToWindow } = require('./appUpdater');
+const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 
@@ -30,8 +30,10 @@ function handleFilePath(filePath) {
 	fileToOpen = fileData;
 	if (mainWindow) {
 		mainWindow.send('open-file', fileData);
+		const statusToSend = `File path to upload: ${filePath}`;
+		log.info(statusToSend);
+		mainWindow.send('Updater', statusToSend);
 	}
-	sendStatusToWindow(`File path to upload: ${filePath}`);
 	return fileData;
 }
 
