@@ -13,6 +13,7 @@
 		"dist": "build",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"pack_windows": "build --win --x64 --ia32",
+		"pack_mac": "build --mac",
 		"pub": "build --mac --win -p always"
 	},
 	"author": "Mediref",
