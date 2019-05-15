@@ -20,7 +20,7 @@ require('electron-context-menu')();
 
 // Set up all log related functionality here
 log.transports.file.level = 'info';
-log.transports.file.file = __dirname + '/log.txt';
+// log.transports.file.file = __dirname + '/log.txt';
 
 let mainWindow = null;
 
@@ -51,10 +51,12 @@ function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = ''
 }
 
 function handleWindowsArgs(arr) {
-	const [backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = arr;
+	const [, backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = arr;
+	// const pathOfUpload = arr[2]
 	const pathOfUpload = filePath || backupFilePath;
+
 	if (pathOfUpload) {
-		handleFilePath(filePath, ptName, ptEmail, recipientEmail);
+		handleFilePath(pathOfUpload, ptName, ptEmail, recipientEmail);
 	}
 }
 
@@ -92,6 +94,12 @@ app.on('ready', () => {
 		handleWindowsArgs(process.argv);
 	}
 	mainWindow.maximize();
+	if (isDev) {
+		console.log('Dev ready')
+	} else {
+		console.log('Ready!')
+	}
+	
 
 	// if (isDev) {
 	// 	mainWindow.loadURL('http://localhost:3000/');
