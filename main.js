@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
@@ -11,14 +11,15 @@ const path = require('path');
 */
 
 const log = require('electron-log');
-const isDev = require('electron-is-dev');
+// const isDev = require('electron-is-dev');
 const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 
 require('electron-context-menu')();
 
-// Set up all log related functionality here
+// Set up all log related functionality here. Don't 100% understand the logging levels/functionality.
+// Has been sporadic, esp when not in appData.Don't know if related. Second line causes an error if not commented out
 log.transports.file.level = 'info';
 // log.transports.file.file = __dirname + '/log.txt';
 
@@ -94,21 +95,19 @@ app.on('ready', () => {
 		handleWindowsArgs(process.argv);
 	}
 	mainWindow.maximize();
-	if (isDev) {
-		console.log('Dev ready')
-	} else {
-		console.log('Ready!')
-	}
-	
 
+	/* 
+		isDev now requires Electron 3.0 or higher, can't use this until then... In the meantime, if necessary, we could potentiall add an ipcrenderer event to 
+		launch the dev build instead, but seems like a lot of work for not that much benefit (yet)
+	*/
 	// if (isDev) {
 	// 	mainWindow.loadURL('http://localhost:3000/');
 	// 	mainWindow.webContents.openDevTools();
 	// } else {
 	// 	mainWindow.loadURL('https://new.mediref.com.au/new');
 	// }
-	mainWindow.loadURL('https://mediref-zebzogcsem.now.sh/new');
-	// mainWindow.loadURL('https://www.mediref.com.au/new');
+
+	mainWindow.loadURL('https://www.mediref.com.au/new');
 
 	appUpdater(mainWindow);
 
