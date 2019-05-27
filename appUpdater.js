@@ -8,7 +8,8 @@ const log = require('electron-log'); //open ~/Library/Logs/mediref-desktop/log.l
 function appUpdater(mainWindow) {
 	// Don't initiate auto-updates in development and on Linux system
 	// since autoUpdater doesn't work on Linux
-	if (process.platform === 'linux') {
+	if (isDev || process.platform === 'linux') {
+		sendStatusToWindow('Dev or Linux environment detected. Updater function will not run');
 		return;
 	}
 
