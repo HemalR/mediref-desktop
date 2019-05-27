@@ -55,7 +55,6 @@ function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = ''
 
 function handleWindowsArgs(arr) {
 	const [, backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = arr;
-	// const pathOfUpload = arr[2]
 	const pathOfUpload = filePath || backupFilePath;
 
 	if (pathOfUpload) {
@@ -100,10 +99,6 @@ app.on('ready', () => {
 	}
 	mainWindow.maximize();
 
-	/* 
-		isDev now requires Electron 3.0 or higher, can't use this until then... In the meantime, if necessary, we could potentiall add an ipcrenderer event to 
-		launch the dev build instead, but seems like a lot of work for not that much benefit (yet)
-	*/
 	if (isDev) {
 		// 	mainWindow.loadURL('http://localhost:3000/');
 		mainWindow.webContents.openDevTools();
@@ -143,20 +138,7 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('view-pdf', (event, url) => {
-	// const pdfWindow = new BrowserWindow({
-	// 	width: 1024,
-	// 	height: 800,
-	// 	webPreferences: {
-	// 		plugins: true,
-	// 		webSecurity: false,
-	// 	},
-	// });
-	// pdfWindow.loadURL(url);
-
 	const pdfWindow = new BrowserWindow({ width: 1024, height: 800 });
-
 	PDFWindow.addSupport(pdfWindow);
-
-	// pdfWindow.loadURL('https://github.s3.amazonaws.com/media/book.pdf');
 	pdfWindow.loadURL(url);
 });
