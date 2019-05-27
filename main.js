@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
+const PDFWindow = require('electron-pdf-window');
 
 /*
 	Log locations (https://github.com/megahertz/electron-log#readme):
@@ -109,7 +110,7 @@ app.on('ready', () => {
 
 	mainWindow.loadURL('https://www.mediref.com.au/new');
 
-	appUpdater(mainWindow);
+	// appUpdater(mainWindow);
 
 	setTimeout(() => {
 		let version = app.getVersion();
@@ -138,13 +139,20 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('view-pdf', (event, url) => {
-	const pdfWindow = new BrowserWindow({
-		width: 1024,
-		height: 800,
-		webPreferences: {
-			plugins: true,
-			webSecurity: false,
-		},
-	});
+	// const pdfWindow = new BrowserWindow({
+	// 	width: 1024,
+	// 	height: 800,
+	// 	webPreferences: {
+	// 		plugins: true,
+	// 		webSecurity: false,
+	// 	},
+	// });
+	// pdfWindow.loadURL(url);
+
+	const pdfWindow = new BrowserWindow({ width: 1024, height: 800 });
+
+	PDFWindow.addSupport(pdfWindow);
+
+	// pdfWindow.loadURL('https://github.s3.amazonaws.com/media/book.pdf');
 	pdfWindow.loadURL(url);
 });
