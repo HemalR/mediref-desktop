@@ -4,6 +4,7 @@ const mime = require('mime');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const PDFWindow = require('electron-pdf-window');
+const log = require('electron-log');
 
 /*
 	Log locations (https://github.com/megahertz/electron-log#readme):
@@ -12,8 +13,6 @@ const PDFWindow = require('electron-pdf-window');
 	* Windows: %USERPROFILE%\AppData\Roaming\<app name>\log.log
 */
 
-const log = require('electron-log');
-// const isDev = require('electron-is-dev');
 const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
@@ -62,61 +61,75 @@ function handleWindowsArgs(arr) {
 	}
 }
 
+// Each 'print' launches a new instance. Hence, this check ensures only one instance is ever running...
 const gotTheLock = app.requestSingleInstanceLock();
-
-app.on('second-instance', (event, commandLine, cwd) => {
-	/* ... */
-	if (mainWindow) {
-		if (mainWindow.isMinimized()) {
-			mainWindow.restore();
-		}
-		mainWindow.focus();
-		handleWindowsArgs(commandLine);
-	}
-});
 
 if (!gotTheLock) {
 	app.quit();
+} else {
+	app.on('second-instance', (event, commandLine) => {
+		if (mainWindow) {
+			if (mainWindow.isMinimized()) {
+				mainWindow.restore();
+			}
+			mainWindow.focus();
+			/* 
+				With the electron update, when the command line is used to open Electron while it is already open, the command line
+				args are as follows (index numbered):
+				0. Path to Mediref
+				1. '--allow0file-access-from-files'
+				2. '--original-process-start-time=XXX'
+				3. filpath and the rest of the command line args
+
+				For initial processes (where command line opens Electron while it is closed), args 1 and 2 from above are omitted. The printer
+				driver tries to fix this by sending the file path as argument 1 as well as 2/leaving argument 1 empty. But we need to take
+				into account that there are now 2 injections into the args array rather than just 1 so we deal with it by removing arg 1
+			*/
+			commandLine.splice(1, 1);
+			handleWindowsArgs(commandLine);
+		}
+	});
+
+	app.on('ready', () => {
+		log.info('App ready');
+		mainWindow = new BrowserWindow({
+			webPreferences: {
+				nodeIntegration: false,
+				preload: __dirname + '/preload.js',
+			},
+		});
+		if (platform.isWindows) {
+			handleWindowsArgs(process.argv);
+		}
+		mainWindow.maximize();
+
+		if (isDev) {
+			// 	mainWindow.loadURL('http://localhost:3000/');
+			mainWindow.webContents.openDevTools();
+			// } else {
+			// 	mainWindow.loadURL('https://new.mediref.com.au/new');
+		}
+
+		mainWindow.loadURL('https://www.mediref.com.au/new');
+
+		appUpdater(mainWindow);
+
+		setTimeout(() => {
+			let version = app.getVersion();
+			mainWindow.send('Updater', `You are running v${version}`);
+			mainWindow.send('Updater', `Your OS: ${platform.name}`);
+		}, 5000);
+
+		setMenu(app);
+	});
 }
 
 app.on('will-finish-launching', () => {
 	app.on('open-file', (event, filePath) => {
 		event.preventDefault();
 		handleFilePath(filePath);
-		log.info(`Open file line 63 with the path: ${filePath}`);
+		log.info(`Open file line 119 with the path: ${filePath}`);
 	});
-});
-
-app.on('ready', () => {
-	mainWindow = new BrowserWindow({
-		webPreferences: {
-			nodeIntegration: false,
-			preload: __dirname + '/preload.js',
-		},
-	});
-	if (platform.isWindows) {
-		handleWindowsArgs(process.argv);
-	}
-	mainWindow.maximize();
-
-	if (isDev) {
-		// 	mainWindow.loadURL('http://localhost:3000/');
-		mainWindow.webContents.openDevTools();
-		// } else {
-		// 	mainWindow.loadURL('https://new.mediref.com.au/new');
-	}
-
-	mainWindow.loadURL('https://www.mediref.com.au/new');
-
-	appUpdater(mainWindow);
-
-	setTimeout(() => {
-		let version = app.getVersion();
-		mainWindow.send('Updater', `You are running v${version}`);
-		mainWindow.send('Updater', `Your OS: ${platform.name}`);
-	}, 5000);
-
-	setMenu(app);
 });
 
 //For Mac's where app has not quit even if all windows are 'closed'
