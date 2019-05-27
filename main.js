@@ -133,6 +133,7 @@ app.on('activate', () => {
 
 //TODO Set up crash reporter
 process.on('uncaughtException', err => {
+	log.error(err);
 	console.log(`Application exited with error: ${err}`);
 });
 
