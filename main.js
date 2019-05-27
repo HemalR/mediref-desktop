@@ -104,21 +104,11 @@ if (!gotTheLock) {
 		mainWindow.maximize();
 
 		if (isDev) {
-			// 	mainWindow.loadURL('http://localhost:3000/');
+			mainWindow.loadURL('http://localhost:3000/');
 			mainWindow.webContents.openDevTools();
-			// } else {
-			// 	mainWindow.loadURL('https://new.mediref.com.au/new');
+		} else {
+			mainWindow.loadURL('https://new.mediref.com.au/new');
 		}
-
-		mainWindow.loadURL('https://www.mediref.com.au/new');
-
-		appUpdater(mainWindow);
-
-		setTimeout(() => {
-			let version = app.getVersion();
-			mainWindow.send('Updater', `You are running v${version}`);
-			mainWindow.send('Updater', `Your OS: ${platform.name}`);
-		}, 5000);
 
 		setMenu(app);
 	});
@@ -154,4 +144,11 @@ ipcMain.on('view-pdf', (event, url) => {
 	const pdfWindow = new BrowserWindow({ width: 1024, height: 800 });
 	PDFWindow.addSupport(pdfWindow);
 	pdfWindow.loadURL(url);
+});
+
+ipcMain.on('app-mounted', () => {
+	const { name: os, is64Bit } = platform;
+	const electronVersion = app.getVersion();
+	mainWindow.send('handle-electron-version', electronVersion, os, is64Bit);
+	appUpdater(mainWindow);
 });
