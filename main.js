@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
+const isDev = require('electron-is-dev');
 const PDFWindow = require('electron-pdf-window');
 
 /*
@@ -62,8 +63,10 @@ function handleWindowsArgs(arr) {
 	}
 }
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-	// Someone tried to run a second instance, we should focus our window.
+const gotTheLock = app.requestSingleInstanceLock();
+
+app.on('second-instance', (event, commandLine, cwd) => {
+	/* ... */
 	if (mainWindow) {
 		if (mainWindow.isMinimized()) {
 			mainWindow.restore();
@@ -73,7 +76,7 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
 	}
 });
 
-if (shouldQuit) {
+if (!gotTheLock) {
 	app.quit();
 }
 
@@ -101,16 +104,16 @@ app.on('ready', () => {
 		isDev now requires Electron 3.0 or higher, can't use this until then... In the meantime, if necessary, we could potentiall add an ipcrenderer event to 
 		launch the dev build instead, but seems like a lot of work for not that much benefit (yet)
 	*/
-	// if (isDev) {
-	// 	mainWindow.loadURL('http://localhost:3000/');
-	// 	mainWindow.webContents.openDevTools();
-	// } else {
-	// 	mainWindow.loadURL('https://new.mediref.com.au/new');
-	// }
+	if (isDev) {
+		// 	mainWindow.loadURL('http://localhost:3000/');
+		mainWindow.webContents.openDevTools();
+		// } else {
+		// 	mainWindow.loadURL('https://new.mediref.com.au/new');
+	}
 
 	mainWindow.loadURL('https://www.mediref.com.au/new');
 
-	// appUpdater(mainWindow);
+	appUpdater(mainWindow);
 
 	setTimeout(() => {
 		let version = app.getVersion();
