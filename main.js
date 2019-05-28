@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const mime = require("mime");
 const path = require("path");
@@ -7,7 +7,6 @@ const isDev = require("electron-is-dev");
 const { appUpdater } = require("./appUpdater");
 const platform = require("./platform");
 const { setMenu } = require("./menuTemplate");
-const { download } = require("electron-dl");
 
 require("electron-context-menu")();
 
@@ -38,6 +37,7 @@ function handleFilePath(filePath) {
   return fileData;
 }
 
+//@hemal deprecated? https://electronjs.org/docs/all#appmakesingleinstance
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
   if (mainWindow) {
@@ -128,22 +128,59 @@ ipcMain.on("view-pdf", (event, url) => {
 });
 
 ipcMain.on("download-file", (event, downloadUrl) => {
-  console.log(downloadUrl);
-  //downloadOptions allows user to select where to download file, if set to false, autodownloads to default folder.
-  const downloadOptions = { saveAs: true, openFolderWhenDone: true };
-  const win = BrowserWindow.getFocusedWindow();
-  download(win, downloadUrl, downloadOptions)
-    .then(dl => console.log(dl.getSavePath()))
-    .catch(console.error);
-});
+  let contents = mainWindow.webContents;
 
-ipcMain.on("download-files", function(event, urlArray) {
-  const downloadOptions = { saveAs: false, openFolderWhenDone: true };
-  const win = BrowserWindow.getFocusedWindow();
+  contents.downloadURL(downloadUrl);
 
-  for (let i = 0; i < urlArray.length; i++) {
-    download(win, urlArray[i], downloadOptions)
-      .then(dl => console.log(dl.getSavePath()))
-      .catch(console.error);
-  }
+  contents.session.on("will-download", (event, item, contents) => {
+    // const options = {
+    //   filters: [
+    //     { name: "Images", extensions: ["jpg", "png", "gif"] },
+    //     { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+    //     { name: "Custom File Type", extensions: ["as"] },
+    //     { name: "All Files", extensions: ["*"] }
+    //   ]
+    // };
+    // item.setSaveDialogOptions(options);
+
+    item.on("updated", (event, state) => {
+      if (state === "interrupted") {
+        console.log("Download is interrupted but can be resumed");
+      } else if (state === "progressing") {
+        if (item.isPaused()) {
+          console.log("Download is paused");
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`);
+        }
+      }
+    });
+    item.once("done", (event, state) => {
+      if (state === "completed") {
+        console.log("Download successfully");
+      } else {
+        console.log(`Download failed: ${state}`);
+      }
+      console.log(item.getSavePath());
+      console.log(item.getURL());
+    });
+  });
 });
+// let win = new BrowserWindow();
+
+//downloadOptions allows user to select where to download file, if set to false, autodownloads to default folder.
+// const downloadOptions = { saveAs: true, openFolderWhenDone: true };
+// const win = BrowserWindow.getFocusedWindow();
+// download(win, downloadUrl, downloadOptions)
+//   .then(dl => console.log(dl.getSavePath()))
+//   .catch(console.error);
+
+// ipcMain.on("download-files", function(event, urlArray) {
+//   const downloadOptions = { saveAs: false, openFolderWhenDone: true };
+//   const win = BrowserWindow.getFocusedWindow();
+
+//   for (let i = 0; i < urlArray.length; i++) {
+//     download(win, urlArray[i], downloadOptions)
+//       .then(dl => console.log(dl.getSavePath()))
+//       .catch(console.error);
+//   }
+// });
