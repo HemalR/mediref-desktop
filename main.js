@@ -133,36 +133,58 @@ ipcMain.on("download-file", (event, downloadUrl) => {
   contents.downloadURL(downloadUrl);
 
   contents.session.on("will-download", (event, item, contents) => {
-    // const options = {
-    //   filters: [
-    //     { name: "Images", extensions: ["jpg", "png", "gif"] },
-    //     { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
-    //     { name: "Custom File Type", extensions: ["as"] },
-    //     { name: "All Files", extensions: ["*"] }
-    //   ]
-    // };
-    // item.setSaveDialogOptions(options);
-
-    item.on("updated", (event, state) => {
-      if (state === "interrupted") {
-        console.log("Download is interrupted but can be resumed");
-      } else if (state === "progressing") {
-        if (item.isPaused()) {
-          console.log("Download is paused");
-        } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`);
+    if (platform.isWindows) {
+      const options = {
+        filters: [
+          { name: "Images", extensions: ["jpg", "png", "gif"] },
+          { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+          { name: "Custom File Type", extensions: ["as"] },
+          { name: "All Files", extensions: ["*"] }
+        ]
+      };
+      item.setSaveDialogOptions(options);
+      item.on("updated", (event, state) => {
+        if (state === "interrupted") {
+          console.log("Download is interrupted but can be resumed");
+        } else if (state === "progressing") {
+          if (item.isPaused()) {
+            console.log("Download is paused");
+          } else {
+            console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          }
         }
-      }
-    });
-    item.once("done", (event, state) => {
-      if (state === "completed") {
-        console.log("Download successfully");
-      } else {
-        console.log(`Download failed: ${state}`);
-      }
-      console.log(item.getSavePath());
-      console.log(item.getURL());
-    });
+      });
+      item.once("done", (event, state) => {
+        if (state === "completed") {
+          console.log("Download successfully");
+        } else {
+          console.log(`Download failed: ${state}`);
+        }
+        console.log(item.getSavePath());
+        console.log(item.getURL());
+      });
+    } else {
+      item.on("updated", (event, state) => {
+        if (state === "interrupted") {
+          console.log("Download is interrupted but can be resumed");
+        } else if (state === "progressing") {
+          if (item.isPaused()) {
+            console.log("Download is paused");
+          } else {
+            console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          }
+        }
+      });
+      item.once("done", (event, state) => {
+        if (state === "completed") {
+          console.log("Download successfully");
+        } else {
+          console.log(`Download failed: ${state}`);
+        }
+        console.log(item.getSavePath());
+        console.log(item.getURL());
+      });
+    }
   });
 });
 // let win = new BrowserWindow();
