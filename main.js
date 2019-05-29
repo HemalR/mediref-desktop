@@ -172,3 +172,93 @@ ipcMain.on("app-mounted", () => {
   mainWindow.send("handle-electron-version", electronVersion, os, is64Bit);
   appUpdater(mainWindow);
 });
+
+ipcMain.on("download-file", (event, downloadUrl) => {
+  let contents = mainWindow.webContents;
+
+  contents.downloadURL(downloadUrl);
+
+  contents.session.on("will-download", (event, item, contents) => {
+    if (platform.isWindows) {
+      const options = {
+        filters: [
+          { name: "Images", extensions: ["jpg", "png", "gif"] },
+          { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+          { name: "Custom File Type", extensions: ["as"] },
+          { name: "All Files", extensions: ["*"] }
+        ]
+      };
+      item.setSaveDialogOptions(options);
+      item.on("updated", (event, state) => {
+        if (state === "interrupted") {
+          console.log("Download is interrupted but can be resumed");
+        } else if (state === "progressing") {
+          if (item.isPaused()) {
+            console.log("Download is paused");
+          } else {
+            console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          }
+        }
+      });
+      item.once("done", (event, state) => {
+        if (state === "completed") {
+          console.log("Download successfully");
+        } else {
+          console.log(`Download failed: ${state}`);
+        }
+        console.log(item.getSavePath());
+        console.log(item.getURL());
+      });
+    } else {
+      const options = {
+        filters: [
+          { name: "Images", extensions: ["jpg", "png", "gif"] },
+          { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+          { name: "Custom File Type", extensions: ["as"] },
+          { name: "PDF", extensions: ["PDF"] },
+          { name: "All Files", extensions: ["*"] }
+        ]
+      };
+      item.setSaveDialogOptions(options);
+      item.on("updated", (event, state) => {
+        if (state === "interrupted") {
+          console.log("Download is interrupted but can be resumed");
+        } else if (state === "progressing") {
+          if (item.isPaused()) {
+            console.log("Download is paused");
+          } else {
+            console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          }
+        }
+      });
+      item.once("done", (event, state) => {
+        if (state === "completed") {
+          console.log("Download successfully");
+        } else {
+          console.log(`Download failed: ${state}`);
+        }
+        console.log(item.getSavePath());
+        console.log(item.getURL());
+      });
+    }
+  });
+});
+// let win = new BrowserWindow();
+
+//downloadOptions allows user to select where to download file, if set to false, autodownloads to default folder.
+// const downloadOptions = { saveAs: true, openFolderWhenDone: true };
+// const win = BrowserWindow.getFocusedWindow();
+// download(win, downloadUrl, downloadOptions)
+//   .then(dl => console.log(dl.getSavePath()))
+//   .catch(console.error);
+
+// ipcMain.on("download-files", function(event, urlArray) {
+//   const downloadOptions = { saveAs: false, openFolderWhenDone: true };
+//   const win = BrowserWindow.getFocusedWindow();
+
+//   for (let i = 0; i < urlArray.length; i++) {
+//     download(win, urlArray[i], downloadOptions)
+//       .then(dl => console.log(dl.getSavePath()))
+//       .catch(console.error);
+//   }
+// });
