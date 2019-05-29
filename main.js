@@ -109,7 +109,6 @@ if (!gotTheLock) {
 		} else {
 			mainWindow.loadURL('https://new.mediref.com.au/new');
 		}
-
 		setMenu(app);
 	});
 }
@@ -151,4 +150,18 @@ ipcMain.on('app-mounted', () => {
 	const electronVersion = app.getVersion();
 	mainWindow.send('handle-electron-version', electronVersion, os, is64Bit);
 	appUpdater(mainWindow);
+});
+
+ipcMain.on('download-file', (event, downloadUrl, customName, ext, type) => {
+	const contents = mainWindow.webContents;
+	contents.downloadURL(downloadUrl);
+	// https://electronjs.org/docs/api/dialog#dialogshowsavedialogbrowserwindow-options-callback
+	contents.session.on('will-download', (event, item) => {
+		const options = {
+			defaultPath: customName, // defaultPath String (optional) - Absolute directory path, absolute file path, or file name to use by default.
+			buttonLabel: 'Save', // String (optional) - Custom label for the confirmation button, when left empty the default label will be used.
+			filters: [{ name: type, extensions: [ext.substr(1)] }, { name: 'All files', extensions: ['*'] }], // https://electronjs.org/docs/api/structures/file-filter
+		};
+		item.setSaveDialogOptions(options);
+	});
 });
