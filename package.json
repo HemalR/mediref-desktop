@@ -65,9 +65,9 @@
 			"target": "nsis"
 		},
 		"nsis": {
-			"oneClick": false,
+			"oneClick": true,
 			"runAfterFinish": true,
-			"allowToChangeInstallationDirectory": true
+			"allowToChangeInstallationDirectory": false
 		}
 	},
 	"devDependencies": {
