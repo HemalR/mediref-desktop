@@ -1,78 +1,78 @@
 {
-	"name": "mediref-desktop",
-	"version": "0.2.4",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/HemalR/mediref-desktop.git"
-	},
-	"description": "Mediref on your Desktop!",
-	"main": "main.js",
-	"scripts": {
-		"start": "electron main.js",
-		"pack": "build",
-		"dist": "build",
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"pack_windows": "build --win --x64 --ia32",
-		"pack_mac": "build --mac",
-		"pub": "build --mac --win -p always"
-	},
-	"author": "Mediref",
-	"license": "ISC",
-	"dependencies": {
-		"electron-context-menu": "^0.12.1",
-		"electron-is-dev": "^1.1.0",
-		"electron-log": "^3.0.5",
-		"electron-pdf-window": "1.0.10",
-		"electron-updater": "^4.0.6",
-		"mime": "^2.4.3"
-	},
-	"build": {
-		"appId": "com.mediref.desktop",
-		"asar": true,
-		"productName": "Mediref",
-		"copyright": "Copyright © 2019 Mediref",
-		"dmg": {
-			"title": "Mediref",
-			"backgroundColor": "#478EBC",
-			"icon": "build/icon.png"
-		},
-		"mac": {
-			"category": "public.app-category.business",
-			"type": "distribution",
-			"fileAssociations": [
-				{
-					"ext": [
-						"jpg",
-						"jpeg",
-						"png",
-						"PNG",
-						"tiff"
-					],
-					"description": "Image files",
-					"role": "Viewer"
-				},
-				{
-					"ext": [
-						"pdf",
-						"PDF"
-					],
-					"description": "PDF files",
-					"role": "Viewer"
-				}
-			]
-		},
-		"win": {
-			"target": "nsis"
-		},
-		"nsis": {
-			"oneClick": true,
-			"runAfterFinish": true,
-			"allowToChangeInstallationDirectory": false
-		}
-	},
-	"devDependencies": {
-		"electron": "^5.0.2",
-		"electron-builder": "^20.41.0",
-		"electron-prebuilt": "^1.4.13"
-	}
+  "name": "mediref-desktop",
+  "version": "0.2.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HemalR/mediref-desktop.git"
+  },
+  "description": "Mediref on your Desktop!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "pack": "build",
+    "dist": "build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack_windows": "build --win --x64 --ia32",
+    "pack_mac": "build --mac",
+    "pub": "build --mac --win --x64 --ia32 -p always"
+  },
+  "author": "Mediref",
+  "license": "ISC",
+  "dependencies": {
+    "electron-context-menu": "^0.12.1",
+    "electron-is-dev": "^1.1.0",
+    "electron-log": "^3.0.5",
+    "electron-pdf-window": "1.0.10",
+    "electron-updater": "^4.0.6",
+    "mime": "^2.4.3"
+  },
+  "build": {
+    "appId": "com.mediref.desktop",
+    "asar": true,
+    "productName": "Mediref",
+    "copyright": "Copyright © 2019 Mediref",
+    "dmg": {
+      "title": "Mediref",
+      "backgroundColor": "#478EBC",
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "type": "distribution",
+      "fileAssociations": [
+        {
+          "ext": [
+            "jpg",
+            "jpeg",
+            "png",
+            "PNG",
+            "tiff"
+          ],
+          "description": "Image files",
+          "role": "Viewer"
+        },
+        {
+          "ext": [
+            "pdf",
+            "PDF"
+          ],
+          "description": "PDF files",
+          "role": "Viewer"
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "runAfterFinish": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^5.0.2",
+    "electron-builder": "^20.41.0",
+    "electron-prebuilt": "^1.4.13"
+  }
 }
