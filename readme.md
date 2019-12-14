@@ -14,3 +14,10 @@ Example:
 
 1. Ensure that package.json new updated version SemVer is higher than the version on Github
 2.
+
+#Log locations
+
+From https://github.com/megahertz/electron-log#readme
+
+- MacOS: ~/Library/Logs/<app name>/log.log
+- Windows: %USERPROFILE%\AppData\Roaming\<app name>\log.log
