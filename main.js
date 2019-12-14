@@ -202,3 +202,8 @@ ipcMain.on("upload-complete", (_event, filePath) => {
     });
   }
 });
+
+// Remotely load a provided url on to the main window (allows for easier use of ngrok)
+ipcMain.on("load-url", (_event, url) => {
+  mainWindow.loadURL(url);
+});
