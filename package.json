@@ -12,7 +12,7 @@
     "pack": "electron-builder",
     "dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pack_windows": "electron-builder --win --x64 --ia32",
+    "pack_windows": "electron-builder --win",
     "pack_64": "electron-builder --win --x64",
     "pack_mac": "electron-builder --mac",
     "pub": "electron-builder --mac --win --x64 --ia32 -p always"
@@ -66,9 +66,9 @@
       "target": "nsis"
     },
     "nsis": {
-      "oneClick": false,
-      "runAfterFinish": false,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": false
     }
   },
   "devDependencies": {

@@ -58,10 +58,10 @@ function handleFilePath(
   if (mainWindow) {
     mainWindow.send("open-file", fileData);
     const statusToSend = `File path to upload: ${filePath}`;
-    log.info(statusToSend);
+    // log.info(statusToSend);
     mainWindow.send("Updater", statusToSend);
   }
-  log.info(filePath);
+//   log.info(filePath);
   return fileData;
 }
 
@@ -111,7 +111,7 @@ if (!gotTheLock) {
   });
 
   app.on("ready", () => {
-    log.info("App ready");
+    // log.info("App ready");
     mainWindow = new BrowserWindow({
       webPreferences: {
         nodeIntegration: false,
@@ -127,7 +127,7 @@ if (!gotTheLock) {
       mainWindow.loadURL("http://localhost:3000/");
       mainWindow.webContents.openDevTools();
     } else {
-      mainWindow.loadURL("https://www.mediref.com.au/new");
+	    mainWindow.loadURL('https://www.mediref.com.au/new');
     }
     setMenu(app);
   });
@@ -137,7 +137,7 @@ app.on("will-finish-launching", () => {
   app.on("open-file", (event, filePath) => {
     event.preventDefault();
     handleFilePath(filePath);
-    log.info(`Open file line 140 with the path: ${filePath}`);
+    // log.info(`Open file line 140 with the path: ${filePath}`);
   });
 });
 
@@ -150,7 +150,7 @@ app.on("activate", () => {
 
 //TODO Set up crash reporter
 process.on("uncaughtException", err => {
-  log.error(err);
+  log.info(err);
   console.log(`Application exited with error: ${err}`);
 });
 
@@ -168,7 +168,7 @@ ipcMain.on("view-pdf", (_event, url) => {
 ipcMain.on("app-mounted", () => {
   const { name: os, is64Bit } = platform;
   const electronVersion = app.getVersion();
-  mainWindow.send("handle-electron-version", electronVersion, os, is64Bit);
+  mainWindow.send("handle-electron-version (AppData Installer)", electronVersion, os, is64Bit);
   appUpdater(mainWindow);
 });
 
@@ -177,7 +177,7 @@ ipcMain.on("download-file", (_e, downloadUrl, customName, ext, type) => {
   contents.downloadURL(downloadUrl);
   // https://electronjs.org/docs/api/dialog#dialogshowsavedialogbrowserwindow-options-callback
   contents.session.on("will-download", (_event, item) => {
-    log.info("Downloading file");
+    // log.info("Downloading file");
     mainWindow.send("Updater", "Downloading file, electorn main.js line 161");
     const options = {
       defaultPath: customName, // defaultPath String (optional) - Absolute directory path, absolute file path, or file name to use by default.
@@ -193,14 +193,19 @@ ipcMain.on("download-file", (_e, downloadUrl, customName, ext, type) => {
 
 // When an upload is complete, check to see if it was a nova-pdf printed file, and if so, delete it
 ipcMain.on("upload-complete", (_event, filePath) => {
-  if (fs.existsSync(filePath)) {
-    fs.unlink(filePath, err => {
-      if (err) {
-        log.error(err);
-        throw err;
-      }
-    });
-  }
+    // if (fs.existsSync(filePath)) {
+    //   fs.unlink(filePath, err => {
+    //     if (err) {
+    //       mainWindow.send("Updater", JSON.stringify(err));
+    //       log.info(err);
+    //       throw err;
+    //     } else {
+    //       mainWindow.send(`File successfully removed: ${filePath}`);
+    //     }
+    //   });
+    // } else {
+    //   mainWindow.send(`File doesn't exist: ${filePath}`);
+    // } 
 });
 
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)

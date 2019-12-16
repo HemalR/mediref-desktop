@@ -16,12 +16,12 @@ function appUpdater(mainWindow) {
 	// Log whats happening
 	autoUpdater.logger = log;
 	autoUpdater.logger.transports.file.level = 'info';
-	log.info('App starting...');
+	// log.info('App starting...');
 
 	autoUpdater.logger = log;
 
 	function sendStatusToWindow(text) {
-		log.info(text);
+		// log.info(text);
 		if (mainWindow) {
 			mainWindow.send('Updater', text);
 		}

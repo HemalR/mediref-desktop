@@ -21,3 +21,25 @@ From https://github.com/megahertz/electron-log#readme
 
 - MacOS: ~/Library/Logs/<app name>/log.log
 - Windows: %USERPROFILE%\AppData\Roaming\<app name>\log.log
+
+# package.json settings to determine install location
+
+For installs into AppData automatically
+
+```
+    "nsis": {
+      "oneClick": true,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": false
+    }
+```
+
+For installs that ask the user for install location (and allow them to set C:/Program Files as the location):
+
+```
+    "nsis": {
+      "oneClick": false,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": true
+    }
+```
