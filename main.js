@@ -81,7 +81,14 @@ function handleWindowsArgs(arr) {
   }
 }
 
-// Each 'print' launches a new instance. Hence, this check ensures only one instance is ever running...
+/**
+ * Each 'print' launches a new instance. Hence, this check ensures only one instance is ever running... 
+ * See: https://www.electronjs.org/docs/all#apprequestsingleinstancelock
+ * The return value of this method indicates whether or not this instance of your application successfully obtained 
+ * the lock. If it failed to obtain the lock, you can assume that another instance of your application is already 
+ * running with the lock and exit immediately.
+ */
+
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
@@ -211,4 +218,9 @@ ipcMain.on("upload-complete", (_event, filePath) => {
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on("load-url", (_event, url) => {
   mainWindow.loadURL(url);
+});
+
+// Remotely load a provided url on to the main window (allows for easier use of ngrok)
+ipcMain.on("load-dev", () => {
+  mainWindow.loadURL('http://localhost:3000/');
 });
