@@ -1,6 +1,6 @@
 {
   "name": "mediref-desktop",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/HemalR/mediref-desktop.git"
@@ -34,7 +34,6 @@
     "copyright": "Copyright © 2019 Mediref",
     "dmg": {
       "title": "Mediref",
-      "backgroundColor": "#478EBC",
       "icon": "build/icon.png"
     },
     "mac": {
