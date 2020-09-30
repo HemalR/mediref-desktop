@@ -1,6 +1,7 @@
 https://www.excelsiorjet.com/kb/34/howto-digitally-sign-executables-and-installers-produced-by-excelsior-jet
 
-#Signing
+# Signing
+
 signtool sign /f certificate-file
 /p password
 /t timestamp-server-URL
@@ -10,12 +11,12 @@ Example:
 
     C:\temp> signtool sign /f MyCert.p12 /p SeCRetpASsw0rd /t http://timestamp.comodoca.com/authenticode MyApp.exe
 
-#Auto-updating
+# Auto-updating
 
 1. Ensure that package.json new updated version SemVer is higher than the version on Github
 2.
 
-#Log locations
+# Log locations
 
 From https://github.com/megahertz/electron-log#readme
 
@@ -43,3 +44,22 @@ For installs that ask the user for install location (and allow them to set C:/Pr
       "allowToChangeInstallationDirectory": true
     }
 ```
+
+# Creating a NOVA installer from scratch
+
+1. Download and install the OEM
+2. Run the cobranding tool
+
+- Use the license files sent by Nova/on Google Drive
+- For local save option, default is C:\Users\[U]\Documents\
+  The [U] so that each user has their own folder
+- OEM Run parameters - specify either Program Files as the application path (if installed for all users) or user macros to specify AppData as the install location
+- Digitally sign the OEM and PrinterDrivers (instructions above)
+
+3. Download Inno setup from JRSoftware.org
+
+- Use the mainsetup.iss script to generate a single combined installer
+
+# Different installers naming conventions to follow
+
+# Version numbers

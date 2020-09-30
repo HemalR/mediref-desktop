@@ -131,10 +131,10 @@ if (!gotTheLock) {
     mainWindow.maximize();
 
     if (isDev) {
-      mainWindow.loadURL("http://localhost:3000/");
+      mainWindow.loadURL("http://localhost:3000/new");
       mainWindow.webContents.openDevTools();
     } else {
-	    mainWindow.loadURL('https://www.mediref.com.au/new');
+      mainWindow.loadURL('https://www.mediref.com.au/new');
     }
     setMenu(app);
   });

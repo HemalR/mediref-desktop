@@ -31,10 +31,11 @@
     "appId": "com.mediref.desktop",
     "asar": true,
     "productName": "Mediref",
-    "copyright": "Copyright © 2019 Mediref",
+    "copyright": "Copyright © 2020 Mediref",
     "dmg": {
       "title": "Mediref",
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "sign": true
     },
     "mac": {
       "category": "public.app-category.business",
@@ -72,6 +73,6 @@
   },
   "devDependencies": {
     "electron": "^5.0.12",
-    "electron-builder": "^22.2.0"
+    "electron-builder": "^22.7.0"
   }
 }
