@@ -23,7 +23,6 @@
 		"electron-context-menu": "^2.3.0",
 		"electron-is-dev": "^1.2.0",
 		"electron-log": "^4.2.4",
-		"electron-pdf-window": "1.0.10",
 		"electron-updater": "^4.3.5",
 		"mime": "^2.4.6"
 	},

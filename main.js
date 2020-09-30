@@ -3,7 +3,6 @@ const fs = require('fs');
 const mime = require('mime');
 const path = require('path');
 const isDev = require('electron-is-dev');
-const PDFWindow = require('electron-pdf-window');
 const log = require('electron-log');
 
 /*
@@ -154,8 +153,13 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('view-pdf', (_event, url) => {
-	const pdfWindow = new BrowserWindow({ width: 1024, height: 800 });
-	PDFWindow.addSupport(pdfWindow);
+	const pdfWindow = new BrowserWindow({
+		width: 1024,
+		height: 800,
+		webPreferences: {
+			plugins: true,
+		},
+	});
 	pdfWindow.loadURL(url);
 });
 
