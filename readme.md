@@ -18,7 +18,9 @@ Extra info:
 - https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository
 
 1. Ensure that package.json new updated version SemVer is higher than the version on Github
-2.
+2. Draft a new release on Github (not sure this is needed or if it happens automatically based on the package.json version number from 1 above)
+3. `npm run pub` - `electron-builder --mac --win --x64 --ia32 -p always`
+4. Release when ready
 
 # Log locations
 
