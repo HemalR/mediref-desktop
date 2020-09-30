@@ -5,3 +5,4 @@ certificates
 electron-builder.env
 *.msi
 *.exe
+mediref-nova-pdf/licenses/*
