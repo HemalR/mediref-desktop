@@ -17,6 +17,21 @@ const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 const contextMenu = require('electron-context-menu');
 
+contextMenu({
+	prepend: (defaultActions, params, browserWindow) => [
+		{
+			label: 'Search Google for “{selection}”',
+			// Only show it when right-clicking text
+			visible: params.selectionText.trim().length > 0,
+			click: () => {
+				shell.openExternal(`https://google.com/search?q=${encodeURIComponent(params.selectionText)}`);
+			},
+		},
+	],
+	showSaveImage: true,
+	showSaveImageAs: true,
+});
+
 // Set up all log related functionality here. Don't 100% understand the logging levels/functionality.
 // Has been sporadic, esp when not in appData.Don't know if related. Second line causes an error if not commented out
 log.transports.file.level = 'info';
@@ -109,6 +124,7 @@ if (!gotTheLock) {
 			webPreferences: {
 				nodeIntegration: false,
 				preload: __dirname + '/preload.js',
+				spellcheck: true,
 			},
 		});
 		if (platform.isWindows) {
