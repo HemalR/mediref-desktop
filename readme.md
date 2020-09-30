@@ -13,6 +13,10 @@ Example:
 
 # Auto-updating
 
+Extra info:
+
+- https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository
+
 1. Ensure that package.json new updated version SemVer is higher than the version on Github
 2.
 
