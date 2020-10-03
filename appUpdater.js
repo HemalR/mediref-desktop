@@ -30,17 +30,17 @@ function appUpdater(mainWindow) {
 	autoUpdater.on('checking-for-update', () => {
 		sendStatusToWindow('Checking for update...');
 	});
-	autoUpdater.on('update-available', info => {
+	autoUpdater.on('update-available', (info) => {
 		sendStatusToWindow('Update available.');
 	});
-	autoUpdater.on('update-not-available', info => {
+	autoUpdater.on('update-not-available', (info) => {
 		sendStatusToWindow('Update not available.');
 	});
-	autoUpdater.on('error', err => {
+	autoUpdater.on('error', (err) => {
 		log.info(err);
-		sendStatusToWindow(`Error in auto-updater.`);
+		sendStatusToWindow(`Error in auto-updater. ${JSON.stringify(err)}`);
 	});
-	autoUpdater.on('download-progress', progressObj => {
+	autoUpdater.on('download-progress', (progressObj) => {
 		let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
 		log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
 		log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
@@ -48,7 +48,7 @@ function appUpdater(mainWindow) {
 	});
 
 	// Ask the user to restart if an update is available
-	autoUpdater.on('update-downloaded', event => {
+	autoUpdater.on('update-downloaded', (event) => {
 		dialog.showMessageBox(
 			{
 				type: 'question',
@@ -57,7 +57,7 @@ function appUpdater(mainWindow) {
 				message: `A new update ${event.version} has been downloaded`,
 				detail: 'It will be installed the next time you restart the application',
 			},
-			response => {
+			(response) => {
 				if (response === 0) {
 					setTimeout(() => {
 						autoUpdater.quitAndInstall();
