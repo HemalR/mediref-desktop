@@ -18,7 +18,7 @@ Extra info:
 - https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository
 
 1. Ensure that package.json new updated version SemVer is higher than the version on Github
-2. Draft a new release on Github (not sure this is needed or if it happens automatically based on the package.json version number from 1 above)
+2. (Optional) Draft a new release on Github (if skipped, step 1 and 3 will automatically create one)
 3. `npm run pub` - `electron-builder --mac --win --x64 --ia32 -p always`
 4. Release when ready
 
@@ -50,6 +50,8 @@ For installs that ask the user for install location (and allow them to set C:/Pr
       "allowToChangeInstallationDirectory": true
     }
 ```
+
+Also ensure that the message sent to electron about electron version and whether it was the appData, is updated depending on the created installer.
 
 # Creating a NOVA installer from scratch
 
