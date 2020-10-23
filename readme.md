@@ -51,8 +51,6 @@ For installs that ask the user for install location (and allow them to set C:/Pr
     }
 ```
 
-Also ensure that the message sent to electron about electron version and whether it was the appData, is updated depending on the created installer.
-
 # Creating a NOVA installer from scratch
 
 1. Download and install the OEM
