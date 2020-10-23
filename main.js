@@ -182,7 +182,8 @@ ipcMain.on('view-pdf', (_event, url) => {
 ipcMain.on('app-mounted', () => {
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
-	const msg = `handle-electron-version (AppData Installer) ${electronVersion}, os: ${os}. 64 bit? ${
+	const basepath = app.getAppPath();
+	const msg = `handle-electron-version (Path: ${basepath}) ${electronVersion}, os: ${os}. 64 bit? ${
 		is64Bit ? 'yes' : 'no'
 	}`;
 	mainWindow.send('Updater', msg);
