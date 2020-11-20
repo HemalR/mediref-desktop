@@ -18,7 +18,7 @@ const { setMenu } = require('./menuTemplate');
 const contextMenu = require('electron-context-menu');
 
 contextMenu({
-	prepend: (defaultActions, params, browserWindow) => [
+	prepend: (_defaultActions, params, _browserWindow) => [
 		{
 			label: 'Search Google for “{selection}”',
 			// Only show it when right-clicking text
@@ -39,15 +39,16 @@ log.transports.file.level = 'info';
 
 let mainWindow = null;
 
-global.fileToOpen = null; //Declare a global empty object variable to hold file path if a file is opened while the app is closed
+// Declare a global empty object variable to hold file path if a file is opened while the app is closed
+global.fileToOpen = null;
 global.gp = null;
 
-//Clear the global fileToOpen variable once Mediref app renderer process has handled the file
+// Clear the global fileToOpen variable once Mediref app renderer process has handled the file
 ipcMain.on('file-handled', () => {
 	fileToOpen = null;
 });
 
-//Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
+// Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
 function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = '') {
 	gp = filePath;
 	const name = path.basename(filePath);
@@ -69,7 +70,6 @@ function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = ''
 		// log.info(statusToSend);
 		mainWindow.send('Updater', statusToSend);
 	}
-	//   log.info(filePath);
 	return fileData;
 }
 
@@ -119,10 +119,10 @@ if (!gotTheLock) {
 	});
 
 	app.on('ready', () => {
-		// log.info("App ready");
 		mainWindow = new BrowserWindow({
 			webPreferences: {
 				nodeIntegration: false,
+				enableRemoteModule: true,
 				preload: __dirname + '/preload.js',
 				spellcheck: true,
 			},
@@ -146,24 +146,23 @@ app.on('will-finish-launching', () => {
 	app.on('open-file', (event, filePath) => {
 		event.preventDefault();
 		handleFilePath(filePath);
-		// log.info(`Open file line 140 with the path: ${filePath}`);
 	});
 });
 
-//For Mac's where app has not quit even if all windows are 'closed'
+// For Mac's where app has not quit even if all windows are 'closed'
 app.on('activate', () => {
 	if (mainWindow === null) {
 		createMainWindow();
 	}
 });
 
-//TODO Set up crash reporter
+// TODO Set up crash reporter
 process.on('uncaughtException', (err) => {
 	log.info(err);
 	console.log(`Application exited with error: ${err}`);
 });
 
-//Quit app if all windows are closed
+// Quit app if all windows are closed
 app.on('window-all-closed', () => {
 	app.quit();
 });
@@ -180,6 +179,9 @@ ipcMain.on('view-pdf', (_event, url) => {
 });
 
 ipcMain.on('app-mounted', () => {
+	// if (fileToOpen) {
+	// 	mainWindow.send('open-file', fileData);
+	// }
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
