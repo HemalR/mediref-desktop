@@ -180,16 +180,10 @@ ipcMain.on('view-pdf', (_event, url) => {
 });
 
 ipcMain.on('app-mounted', () => {
-	// if (fileToOpen) {
-	// 	mainWindow.send('open-file', fileData);
-	// }
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
-	const msg = `handle-electron-version (Path: ${basepath}) ${electronVersion}, os: ${os}. 64 bit? ${
-		is64Bit ? 'yes' : 'no'
-	}`;
-	mainWindow.send('Updater', msg);
+	mainWindow.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
 	appUpdater(mainWindow);
 });
 
@@ -203,4 +197,9 @@ ipcMain.on('load-url', (_event, url) => {
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on('load-dev', () => {
 	mainWindow.loadURL('http://localhost:3000/');
+});
+
+// Remotely load staging url on to the main window (allows for easier debugging of staging environment)
+ipcMain.on('load-staging', () => {
+	mainWindow.loadURL('https://staging.mediref.com.au/');
 });
