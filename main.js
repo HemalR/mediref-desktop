@@ -16,6 +16,7 @@ const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 const contextMenu = require('electron-context-menu');
+const { handleDownload } = require('./src/handleDownload');
 
 contextMenu({
 	prepend: (_defaultActions, params, _browserWindow) => [
@@ -136,7 +137,7 @@ if (!gotTheLock) {
 			mainWindow.loadURL('http://localhost:3000/new');
 			mainWindow.webContents.openDevTools();
 		} else {
-			mainWindow.loadURL('https://www.mediref.com.au/new');
+			mainWindow.loadURL('https://staging.mediref.com.au/new');
 		}
 		setMenu(app);
 	});
@@ -192,41 +193,7 @@ ipcMain.on('app-mounted', () => {
 	appUpdater(mainWindow);
 });
 
-ipcMain.on('download-file', (_e, downloadUrl, customName, ext, type) => {
-	const contents = mainWindow.webContents;
-	contents.downloadURL(downloadUrl);
-	// https://electronjs.org/docs/api/dialog#dialogshowsavedialogbrowserwindow-options-callback
-	contents.session.on('will-download', (_event, item) => {
-		// log.info("Downloading file");
-		mainWindow.send('Updater', 'Downloading file, electorn main.js line 161');
-		const options = {
-			defaultPath: customName, // defaultPath String (optional) - Absolute directory path, absolute file path, or file name to use by default.
-			buttonLabel: 'Save', // String (optional) - Custom label for the confirmation button, when left empty the default label will be used.
-			filters: [
-				{ name: type, extensions: [ext.substr(1)] },
-				{ name: 'All files', extensions: ['*'] },
-			], // https://electronjs.org/docs/api/structures/file-filter
-		};
-		item.setSaveDialogOptions(options);
-	});
-});
-
-// When an upload is complete, check to see if it was a nova-pdf printed file, and if so, delete it
-ipcMain.on('upload-complete', (_event, filePath) => {
-	// if (fs.existsSync(filePath)) {
-	//   fs.unlink(filePath, err => {
-	//     if (err) {
-	//       mainWindow.send("Updater", JSON.stringify(err));
-	//       log.info(err);
-	//       throw err;
-	//     } else {
-	//       mainWindow.send(`File successfully removed: ${filePath}`);
-	//     }
-	//   });
-	// } else {
-	//   mainWindow.send(`File doesn't exist: ${filePath}`);
-	// }
-});
+ipcMain.on('download-file', handleDownload);
 
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on('load-url', (_event, url) => {
