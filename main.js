@@ -160,13 +160,14 @@ app.on('window-all-closed', () => {
 	app.quit();
 });
 
-ipcMain.on('view-pdf', (_event, url) => {
+ipcMain.on('view-pdf', (_event, url, filename) => {
 	const pdfWindow = new BrowserWindow({
 		width: 1024,
 		height: 800,
 		webPreferences: {
 			plugins: true,
 		},
+		title: filename,
 	});
 	pdfWindow.loadURL(url);
 });
