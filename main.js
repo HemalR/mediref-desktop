@@ -4,14 +4,6 @@ const mime = require('mime');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
-
-/*
-	Log locations (https://github.com/megahertz/electron-log#readme):
-
-	* MacOS: ~/Library/Logs/<app name>/log.log
-	* Windows: %USERPROFILE%\AppData\Roaming\<app name>\log.log
-*/
-
 const { appUpdater } = require('./appUpdater');
 const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
