@@ -129,7 +129,7 @@ if (!gotTheLock) {
 			mainWindow.loadURL('http://localhost:3000/new');
 			mainWindow.webContents.openDevTools();
 		} else {
-			mainWindow.loadURL('https://staging.mediref.com.au/new');
+			mainWindow.loadURL('https://www.mediref.com.au/new');
 		}
 		setMenu(app);
 	});
