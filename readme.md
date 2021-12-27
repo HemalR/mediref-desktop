@@ -55,14 +55,30 @@ For installs that ask the user for install location (and allow them to set C:/Pr
 
 1. Download and install the OEM
 2. Run the cobranding tool
+3. Configuration files page
 
 - Use the license files sent by Nova/on Google Drive
-- For local save option, default is C:\Users\[U]\Documents\
-  The [U] so that each user has their own folder
-- OEM Run parameters - specify either Program Files as the application path (if installed for all users) or user macros to specify AppData as the install location
-- Digitally sign the OEM and PrinterDrivers (instructions above)
+- Keep the rest of the options as their default settings
 
-3. Download Inno setup from JRSoftware.org
+2. OEM Save parameters page
+
+- For local save option, default is C:\Users\[U]\Mediref-Printer-PDFs
+- The [U] so that each user has their own folder
+- Username and password should be blank
+- File should be [N] (the document name)
+- When file exists, auto number the new file
+
+3. OEM Run parameters - specify either Program Files as the application path (if installed for all users) or user macros to specify AppData as the install location
+
+- For all users, "C:\Program Files\Mediref\Mediref.exe"
+- Parameters - %1
+- Blank username and password
+- Run as "normal"
+- Run type "Run from shell"
+
+3. Digitally sign the OEM and PrinterDrivers (instructions above)
+
+4. Download Inno setup from JRSoftware.org
 
 - Use the mainsetup.iss script to generate a single combined installer
 
