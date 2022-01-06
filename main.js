@@ -89,12 +89,13 @@ async function clearTempFolder() {
 		const oneDay = 1 * 24 * 60 * 60 * 1000;
 		const deleteDate = new Date().getTime() - oneDay;
 		files.forEach(async function (file) {
+			const filepath = path.join(tempDir, file);
 			mainWindow.send('Updater', `File: ${filepath}`);
 
-			const filepath = path.join(tempDir, file);
-			// Find each files createdAt timestamp
-			const { ctime } = await stat(filepath);
-			const createdDate = new Date(ctime).getTime();
+			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for 
+			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
+			const { mtime, birthtime } = await stat(filepath);
+			const createdDate = Math.min(mtime, birthtime);
 			// If older than one day, delete it
 			if (deleteDate > createdDate) {
 				await unlink(filepath);
