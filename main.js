@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
+const { promisify } = require('util');
 const mime = require('mime');
 const path = require('path');
 const isDev = require('electron-is-dev');
@@ -9,6 +10,10 @@ const platform = require('./platform');
 const { setMenu } = require('./menuTemplate');
 const contextMenu = require('electron-context-menu');
 const { handleDownload } = require('./src/handleDownload');
+
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
+const unlink = promisify(fs.unlink);
 
 contextMenu({
 	prepend: (_defaultActions, params, _browserWindow) => [
@@ -75,6 +80,37 @@ function handleWindowsArgs(arr) {
 	}
 }
 
+// Temp folder for PS files (when using Ghostscript) should be cleared
+async function clearTempFolder() {
+	try {
+		const tempDir = 'C:\\MedirefPrinter\\Temp';
+		// Retrieve all files in the temp folder
+		const files = await readdir(tempDir);
+		const oneDay = 1 * 24 * 60 * 60 * 1000;
+		const deleteDate = new Date().getTime() - oneDay;
+		files.forEach(async function (file) {
+			mainWindow.send('Updater', `File: ${filepath}`);
+
+			const filepath = path.join(tempDir, file);
+			// Find each files createdAt timestamp
+			const { ctime } = await stat(filepath);
+			const createdDate = new Date(ctime).getTime();
+			// If older than one day, delete it
+			if (deleteDate > createdDate) {
+				await unlink(filepath);
+				mainWindow.send('Updater', `Deleted file: ${filepath}`);
+			} else {
+				mainWindow.send('Updater', `Did not delete File: ${filepath}`);
+			}
+		});
+	} catch (err) {
+		mainWindow.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
+		if (err.code === 'ENOENT') {
+			return;
+		}
+	}
+}
+
 /**
  * Each 'print' launches a new instance. Hence, this check ensures only one instance is ever running...
  * See: https://www.electronjs.org/docs/all#apprequestsingleinstancelock
@@ -122,7 +158,9 @@ if (!gotTheLock) {
 		});
 		if (platform.isWindows) {
 			handleWindowsArgs(process.argv);
+			clearTempFolder();
 		}
+
 		mainWindow.maximize();
 
 		if (isDev) {
@@ -195,4 +233,17 @@ ipcMain.on('load-dev', () => {
 // Remotely load staging url on to the main window (allows for easier debugging of staging environment)
 ipcMain.on('load-staging', () => {
 	mainWindow.loadURL('https://staging.mediref.com.au/');
+});
+
+ipcMain.on('clear-temp', async () => {
+	await clearTempFolder();
+	mainWindow.send('Updater', `Temp folder apparently cleared..?`);
+});
+
+ipcMain.on('aping', async () => {
+	mainWindow.send('Updater', `apong`);
+});
+
+ipcMain.on('ping', () => {
+	mainWindow.send('Updater', `pong`);
 });
