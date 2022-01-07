@@ -26,7 +26,6 @@
 		"electron-is-dev": "^1.2.0",
 		"electron-log": "^4.2.4",
 		"electron-updater": "^4.3.5",
-		"eslint": "^8.6.0",
 		"mime": "^2.4.6"
 	},
 	"build": {
@@ -75,6 +74,7 @@
 	},
 	"devDependencies": {
 		"electron": "^11.2.1",
-		"electron-builder": "^22.9.1"
+		"electron-builder": "^22.9.1",
+		"eslint": "^8.6.0"
 	}
 }
