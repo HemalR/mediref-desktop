@@ -92,7 +92,7 @@ async function clearTempFolder() {
 			const filepath = path.join(tempDir, file);
 			mainWindow.send('Updater', `File: ${filepath}`);
 
-			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for 
+			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
 			const { mtime, birthtime } = await stat(filepath);
 			const createdDate = Math.min(mtime, birthtime);
