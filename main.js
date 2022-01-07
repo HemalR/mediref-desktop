@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+require('@electron/remote/main').initialize();
 const fs = require('fs');
 const { promisify } = require('util');
 const mime = require('mime');
@@ -165,6 +166,7 @@ if (!gotTheLock) {
 		mainWindow.maximize();
 
 		if (isDev) {
+			// mainWindow.loadURL('https://www.mediref.com.au/new');
 			mainWindow.loadURL('http://localhost:3000/new');
 			mainWindow.webContents.openDevTools();
 		} else {
@@ -242,9 +244,11 @@ ipcMain.on('clear-temp', async () => {
 });
 
 ipcMain.on('aping', async () => {
+	console.log('Async Ping received');
 	mainWindow.send('Updater', `apong`);
 });
 
 ipcMain.on('ping', () => {
+	console.log('Ping received');
 	mainWindow.send('Updater', `pong`);
 });
