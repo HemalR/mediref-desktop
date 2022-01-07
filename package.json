@@ -74,7 +74,7 @@
 		}
 	},
 	"devDependencies": {
-		"electron": "15.3.4",
+		"electron": "16.0.6",
 		"electron-builder": "^22.9.1",
 		"eslint": "^8.6.0",
 		"prettier": "^2.5.1",
