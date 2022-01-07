@@ -21,6 +21,7 @@
 	"author": "Mediref",
 	"license": "ISC",
 	"dependencies": {
+		"@electron/remote": "^2.0.1",
 		"electron-context-menu": "^2.3.0",
 		"electron-dl": "^3.0.2",
 		"electron-is-dev": "^1.2.0",
