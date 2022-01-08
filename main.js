@@ -113,6 +113,31 @@ async function clearTempFolder() {
 	}
 }
 
+function createMainWindow() {
+	mainWindow = new BrowserWindow({
+		webPreferences: {
+			nodeIntegration: false,
+			enableRemoteModule: true,
+			preload: __dirname + '/preload.js',
+			spellcheck: true,
+		},
+	});
+	if (platform.isWindows) {
+		handleWindowsArgs(process.argv);
+		clearTempFolder();
+	}
+
+	mainWindow.maximize();
+
+	if (isDev) {
+		mainWindow.loadURL('http://localhost:3000/new');
+		mainWindow.webContents.openDevTools();
+	} else {
+		mainWindow.loadURL('https://www.mediref.com.au/new');
+	}
+	setMenu(app);
+}
+
 /**
  * Each 'print' launches a new instance. Hence, this check ensures only one instance is ever running...
  * See: https://www.electronjs.org/docs/all#apprequestsingleinstancelock
@@ -149,31 +174,7 @@ if (!gotTheLock) {
 		}
 	});
 
-	app.on('ready', () => {
-		mainWindow = new BrowserWindow({
-			webPreferences: {
-				nodeIntegration: false,
-				enableRemoteModule: true,
-				preload: __dirname + '/preload.js',
-				spellcheck: true,
-			},
-		});
-		if (platform.isWindows) {
-			handleWindowsArgs(process.argv);
-			clearTempFolder();
-		}
-
-		mainWindow.maximize();
-
-		if (isDev) {
-			// mainWindow.loadURL('https://www.mediref.com.au/new');
-			mainWindow.loadURL('http://localhost:3000/new');
-			mainWindow.webContents.openDevTools();
-		} else {
-			mainWindow.loadURL('https://www.mediref.com.au/new');
-		}
-		setMenu(app);
-	});
+	app.on('ready', createMainWindow);
 }
 
 app.on('will-finish-launching', () => {
