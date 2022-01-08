@@ -1,5 +1,4 @@
 'use strict';
-const fs = require('fs');
 const { app, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const isDev = require('electron-is-dev');
