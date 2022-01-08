@@ -29,10 +29,10 @@ function appUpdater(mainWindow) {
 	autoUpdater.on('checking-for-update', () => {
 		sendStatusToWindow('Checking for update...');
 	});
-	autoUpdater.on('update-available', (info) => {
+	autoUpdater.on('update-available', () => {
 		sendStatusToWindow('Update available.');
 	});
-	autoUpdater.on('update-not-available', (info) => {
+	autoUpdater.on('update-not-available', () => {
 		sendStatusToWindow('Update not available.');
 	});
 	autoUpdater.on('error', (err) => {
@@ -47,25 +47,21 @@ function appUpdater(mainWindow) {
 	});
 
 	// Ask the user to restart if an update is available
-	autoUpdater.on('update-downloaded', (event) => {
-		dialog.showMessageBox(
-			{
-				type: 'question',
-				buttons: ['Install and Relaunch', 'Install Later'],
-				defaultId: 0,
-				message: `A new update ${event.version} has been downloaded`,
-				detail: 'It will be installed the next time you restart the application',
-			},
-			(response) => {
-				if (response === 0) {
-					setTimeout(() => {
-						autoUpdater.quitAndInstall();
-						// force app to quit. This is just a workaround, ideally autoUpdater.quitAndInstall() should relaunch the app.
-						app.quit();
-					}, 1000);
-				}
-			}
-		);
+	autoUpdater.on('update-downloaded', async (event) => {
+		const { response } = await dialog.showMessageBox({
+			type: 'question',
+			buttons: ['Install and Relaunch', 'Install Later'],
+			defaultId: 0,
+			message: `A new Mediref update ${event.version} has been downloaded`,
+			detail: 'It will be installed the next time you restart the application',
+		});
+		if (response === 0) {
+			autoUpdater.quitAndInstall();
+			// setTimeout(() => {
+			// 	// force app to quit. This is just a workaround, ideally autoUpdater.quitAndInstall() should relaunch the app.
+			// 	app.quit();
+			// }, 1000);
+		}
 	});
 	// Init for updates
 	autoUpdater.checkForUpdates();
