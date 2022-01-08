@@ -1,13 +1,14 @@
-// Check platform. Code from:https://github.com/adam-lynch/developing-an-electron-edge/
-
+// Check platform. Code modified from:https://github.com/adam-lynch/developing-an-electron-edge/
 const os = require('os');
 
-var platform = {
+const platform = {
 	isLinux: false,
 	isMac: false,
 	isWindows: false,
 	isWindows8: false,
 	version: os.release(),
+	name: 'unknown',
+	is64Bit: false, // Default value, to be reassigned later (see below)
 };
 
 /**
@@ -19,13 +20,13 @@ var platform = {
  *
  * @returns {boolean}
  */
-var isOfMinimumVersion = minimumVersion => {
-	var actualVersionPieces = platform.version.split('.'),
-		pieces = minimumVersion.split('.'),
-		numberOfPieces = pieces.length;
+const isOfMinimumVersion = (minimumVersion: string) => {
+	const actualVersionPieces = platform.version.split('.');
+	const pieces = minimumVersion.split('.');
+	const numberOfPieces = pieces.length;
 
-	for (var i = 0; i < numberOfPieces; i++) {
-		var piece = parseInt(pieces[i], 10),
+	for (let i = 0; i < numberOfPieces; i++) {
+		const piece = parseInt(pieces[i], 10),
 			actualPiece = parseInt(actualVersionPieces[i], 10);
 
 		if (typeof actualPiece === 'undefined') {
@@ -42,12 +43,12 @@ var isOfMinimumVersion = minimumVersion => {
 	return true; // all was ok
 };
 
-var name = os.platform();
+const osName = os.platform();
 
-if (name === 'darwin') {
+if (osName === 'darwin') {
 	platform.name = 'mac';
 	platform.isMac = true;
-} else if (name === 'linux') {
+} else if (osName === 'linux') {
 	platform.name = 'linux';
 	platform.isLinux = true;
 } else {
