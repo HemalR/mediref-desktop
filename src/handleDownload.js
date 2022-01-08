@@ -22,7 +22,6 @@ async function handleDownload(_e, { url, downloadLocationPreference, fullName })
 		contents.session.on('will-download', (_event, item) => {
 			const type = mime.getType(fullName);
 			const ext = getExt(fullName);
-			win.send('Updater', `Downloading file (${fullName}) of type: ${type} and extension: ${ext}`);
 			const options = {
 				defaultPath: fullName, // defaultPath String (optional) - Absolute directory path, absolute file path, or file name to use by default.
 				buttonLabel: 'Save', // String (optional) - Custom label for the confirmation button, when left empty the default label will be used.
