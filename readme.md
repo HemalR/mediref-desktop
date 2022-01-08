@@ -85,3 +85,33 @@ For installs that ask the user for install location (and allow them to set C:/Pr
 # Different installers naming conventions to follow
 
 # Version numbers
+
+# Testing
+
+All functionality of the app (user facing and background) is predicated with a comment with the info tag: `// info
+
+## Main
+
+- Mac
+  - Does the printer functionality work when app is closed
+  - Does the printer functionality work when app is open (including not launching additional browser windows)
+  - Ensure closing the window quits the app entirely, or if not, that a new windows is properly created when the 'activate' event fires
+- Windows - Appdata
+  - Does the printer functionality work when app is closed
+  - Does the printer functionality work when app is open (including not launching additional browser windows)
+  - Does the temp folder get cleared properly
+- Windows - Program Files
+  - Does the printer functionality work when app is closed
+  - Does the printer functionality work when app is open (including not launching additional browser windows)
+- Do additional args get passed on - recipient email, patient name etc
+- Does viewing files work (non-PDFs)
+- Does viewing PDFs work
+- Does the react app receive app date (e.g. version etc). `handle-electron-version` event
+
+## Misc
+
+- `./src/handleDownload.js` - `handleDownload` function - download to default downloads directory if set to 'auto' or
+- `./appUpdater.js` - Do auto updates work - for both **AppData** installed applications and **Program Files** installed applications
+- Does the context menu apply correctly
+- Does the preload script load correctly so that the react app has access to required modules (e.g. ipcRenderer)
+- Does the logger work to log whatever is needed to local disk for debugging purposes
