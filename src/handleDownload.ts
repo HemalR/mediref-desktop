@@ -2,13 +2,17 @@ const { BrowserWindow } = require('electron');
 const electronDl = require('electron-dl');
 const mime = require('mime');
 
-function getExt(name) {
+function getExt(name: string) {
 	const parts = name.split('.');
 	return parts[parts.length - 1];
 }
 
-async function handleDownload(_e, { url, downloadLocationPreference, fullName }) {
+async function handleDownload(
+	_e: any,
+	{ url, downloadLocationPreference, fullName }: { url: string; downloadLocationPreference: string; fullName: string }
+) {
 	const win = BrowserWindow.getFocusedWindow();
+	if (!win) return;
 	if (downloadLocationPreference === 'auto') {
 		return await electronDl.download(win, url, {
 			openFolderWhenDone: true,
@@ -19,7 +23,7 @@ async function handleDownload(_e, { url, downloadLocationPreference, fullName })
 		const contents = win.webContents;
 		contents.downloadURL(url);
 		// https://electronjs.org/docs/api/dialog#dialogshowsavedialogbrowserwindow-options-callback
-		contents.session.on('will-download', (_event, item) => {
+		contents.session.on('will-download', (_event: any, item) => {
 			const type = mime.getType(fullName);
 			const ext = getExt(fullName);
 			const options = {
