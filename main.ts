@@ -70,12 +70,10 @@ function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEm
 	};
 	global.fileToOpen = fileData;
 	if (mainWindow) {
-		// @ts-ignore
-		mainWindow.send('open-file', fileData);
+		mainWindow.webContents.send('open-file', fileData);
 		const statusToSend = `File path to upload: ${filePath}`;
 		// log.info(statusToSend);
-		// @ts-ignore
-		mainWindow.send('Updater', statusToSend);
+		mainWindow.webContents.send('Updater', statusToSend);
 	}
 	return fileData;
 }
@@ -100,8 +98,7 @@ async function clearTempFolder() {
 		files.forEach(async function (file) {
 			const filepath = path.join(tempDir, file);
 			if (!mainWindow) return;
-			// @ts-ignore
-			mainWindow.send('Updater', `File: ${filepath}`);
+			mainWindow.webContents.send('Updater', `File: ${filepath}`);
 
 			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
@@ -110,17 +107,14 @@ async function clearTempFolder() {
 			// If older than one day, delete it
 			if (deleteDate > createdDate) {
 				await unlink(filepath);
-				// @ts-ignore
-				mainWindow.send('Updater', `Deleted file: ${filepath}`);
+				mainWindow.webContents.send('Updater', `Deleted file: ${filepath}`);
 			} else {
-				// @ts-ignore
-				mainWindow.send('Updater', `Did not delete File: ${filepath}`);
+				mainWindow.webContents.send('Updater', `Did not delete File: ${filepath}`);
 			}
 		});
 	} catch (err: any) {
 		if (mainWindow) {
-			// @ts-ignore
-			mainWindow.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
+			mainWindow.webContents.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
 		}
 		if (err.code === 'ENOENT') {
 			return;
@@ -233,8 +227,7 @@ ipcMain.on('app-mounted', () => {
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
-	// @ts-ignore
-	mainWindow.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
+	mainWindow.webContents.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
 	appUpdater(mainWindow);
 });
 
@@ -263,21 +256,17 @@ ipcMain.on('load-staging', () => {
 ipcMain.on('clear-temp', async () => {
 	await clearTempFolder();
 	if (!mainWindow) return;
-	// @ts-ignore
-	mainWindow.send('Updater', `Temp folder apparently cleared..?`);
+	mainWindow.webContents.send('Updater', `Temp folder apparently cleared..?`);
 });
 
 ipcMain.on('aping', async () => {
 	console.log('Async Ping received');
 	if (!mainWindow) return;
-	// @ts-ignore
-	mainWindow.send('Updater', `apong`);
+	mainWindow.webContents.send('Updater', `apong`);
 });
 
 ipcMain.on('ping', () => {
 	console.log('Ping received');
-	console.log({ mainWindow });
 	if (!mainWindow) return;
-	// @ts-ignore
-	mainWindow.send('Updater', `pong`);
+	mainWindow.webContents.send('Updater', `pong`);
 });

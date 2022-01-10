@@ -6,9 +6,7 @@ import log from 'electron-log'; //open ~/Library/Logs/mediref-desktop/log.log (m
 export function appUpdater(mainWindow: Electron.BrowserWindow) {
 	function sendStatusToWindow(text: string) {
 		if (mainWindow) {
-			// @ts-ignore
-
-			mainWindow.send('Updater', text);
+			mainWindow.webContents.send('Updater', text);
 		}
 	}
 
