@@ -59,4 +59,4 @@ if (osName === 'darwin') {
 
 platform.is64Bit = os.arch() === 'x64' || process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
 
-module.exports = platform;
+export default platform;

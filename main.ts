@@ -1,22 +1,28 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-require('@electron/remote/main').initialize();
-const fs = require('fs');
-const { promisify } = require('util');
-const mime = require('mime');
-const path = require('path');
-const isDev = require('electron-is-dev');
-const log = require('electron-log');
-const { appUpdater } = require('./appUpdater');
-const platform = require('./platform');
-const { setMenu } = require('./menuTemplate');
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import fs from 'fs';
+import { promisify } from 'util';
+import mime from 'mime';
+import path from 'path';
+import isDev from 'electron-is-dev';
+import log from 'electron-log';
+import { appUpdater } from './appUpdater';
+import platform from './platform';
+import { setMenu } from './menuTemplate';
+import { handleDownload } from './src/handleDownload';
+import { FileData } from './global';
+
+// https://github.com/sindresorhus/electron-context-menu/issues/148
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const contextMenu = require('electron-context-menu');
-const { handleDownload } = require('./src/handleDownload');
+// import contextMenu from 'electron-context-menu';
+require('@electron/remote/main').initialize();
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
 
 contextMenu({
+	// @ts-ignore
 	prepend: (_defaultActions, params, _browserWindow) => [
 		{
 			label: 'Search Google for “{selection}”',
@@ -36,24 +42,24 @@ contextMenu({
 log.transports.file.level = 'info';
 // log.transports.file.file = __dirname + '/log.txt';
 
-let mainWindow = null;
+let mainWindow: null | Electron.BrowserWindow = null;
 
 // Declare a global empty object variable to hold file path if a file is opened while the app is closed
 global.fileToOpen = null;
-global.gp = null;
+global.pathToHandle = null;
 
 // Clear the global fileToOpen variable once Mediref app renderer process has handled the file
 ipcMain.on('file-handled', () => {
-	fileToOpen = null;
+	global.fileToOpen = null;
 });
 
 // Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
-function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = '') {
-	gp = filePath;
+function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEmail = '') {
+	global.pathToHandle = filePath;
 	const name = path.basename(filePath);
 	const type = mime.getType(filePath);
 	const data = fs.readFileSync(filePath, 'base64');
-	const fileData = {
+	const fileData: FileData = {
 		name,
 		data,
 		type,
@@ -62,17 +68,19 @@ function handleFilePath(filePath, ptName = '', ptEmail = '', recipientEmail = ''
 		ptEmail,
 		recipientEmail,
 	};
-	fileToOpen = fileData;
+	global.fileToOpen = fileData;
 	if (mainWindow) {
+		// @ts-ignore
 		mainWindow.send('open-file', fileData);
 		const statusToSend = `File path to upload: ${filePath}`;
 		// log.info(statusToSend);
+		// @ts-ignore
 		mainWindow.send('Updater', statusToSend);
 	}
 	return fileData;
 }
 
-function handleWindowsArgs(arr) {
+function handleWindowsArgs(arr: string[]) {
 	const [, backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = arr;
 	const pathOfUpload = filePath || backupFilePath;
 
@@ -91,22 +99,29 @@ async function clearTempFolder() {
 		const deleteDate = new Date().getTime() - oneDay;
 		files.forEach(async function (file) {
 			const filepath = path.join(tempDir, file);
+			if (!mainWindow) return;
+			// @ts-ignore
 			mainWindow.send('Updater', `File: ${filepath}`);
 
 			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
 			const { mtime, birthtime } = await stat(filepath);
-			const createdDate = Math.min(mtime, birthtime);
+			const createdDate = Math.min(mtime.getTime(), birthtime.getTime());
 			// If older than one day, delete it
 			if (deleteDate > createdDate) {
 				await unlink(filepath);
+				// @ts-ignore
 				mainWindow.send('Updater', `Deleted file: ${filepath}`);
 			} else {
+				// @ts-ignore
 				mainWindow.send('Updater', `Did not delete File: ${filepath}`);
 			}
 		});
-	} catch (err) {
-		mainWindow.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
+	} catch (err: any) {
+		if (mainWindow) {
+			// @ts-ignore
+			mainWindow.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
+		}
 		if (err.code === 'ENOENT') {
 			return;
 		}
@@ -117,7 +132,6 @@ function createMainWindow() {
 	mainWindow = new BrowserWindow({
 		webPreferences: {
 			nodeIntegration: false,
-			enableRemoteModule: true,
 			preload: __dirname + '/preload.js',
 			spellcheck: true,
 		},
@@ -215,9 +229,11 @@ ipcMain.on('view-pdf', (_event, url, filename) => {
 });
 
 ipcMain.on('app-mounted', () => {
+	if (!mainWindow) return;
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
+	// @ts-ignore
 	mainWindow.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
 	appUpdater(mainWindow);
 });
@@ -226,30 +242,42 @@ ipcMain.on('download-file', handleDownload);
 
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on('load-url', (_event, url) => {
+	if (!mainWindow) return;
+
 	mainWindow.loadURL(url);
 });
 
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on('load-dev', () => {
+	if (!mainWindow) return;
 	mainWindow.loadURL('http://localhost:3000/');
 });
 
 // Remotely load staging url on to the main window (allows for easier debugging of staging environment)
 ipcMain.on('load-staging', () => {
+	if (!mainWindow) return;
+
 	mainWindow.loadURL('https://staging.mediref.com.au/');
 });
 
 ipcMain.on('clear-temp', async () => {
 	await clearTempFolder();
+	if (!mainWindow) return;
+	// @ts-ignore
 	mainWindow.send('Updater', `Temp folder apparently cleared..?`);
 });
 
 ipcMain.on('aping', async () => {
 	console.log('Async Ping received');
+	if (!mainWindow) return;
+	// @ts-ignore
 	mainWindow.send('Updater', `apong`);
 });
 
 ipcMain.on('ping', () => {
 	console.log('Ping received');
+	console.log({ mainWindow });
+	if (!mainWindow) return;
+	// @ts-ignore
 	mainWindow.send('Updater', `pong`);
 });

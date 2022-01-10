@@ -8,7 +8,8 @@
 	"description": "Mediref on your Desktop!",
 	"main": "main.js",
 	"scripts": {
-		"start": "electron main.js",
+		"build": "tsc",
+		"start": "npm run build && electron ./dist/main.js",
 		"pack": "electron-builder",
 		"dist": "electron-builder",
 		"test": "echo \"Error: no test specified\" && exit 1",

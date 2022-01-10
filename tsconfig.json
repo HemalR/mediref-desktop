@@ -15,5 +15,5 @@
 		},
 		"strictNullChecks": true
 	},
-	"include": ["src/**/*", "main.ts", "global.d.ts"]
+	"include": ["src/**/*", "*.ts", "global.d.ts"]
 }

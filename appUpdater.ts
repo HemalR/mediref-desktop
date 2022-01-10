@@ -1,10 +1,17 @@
-'use strict';
-const { app, dialog } = require('electron');
-const { autoUpdater } = require('electron-updater');
-const isDev = require('electron-is-dev');
-const log = require('electron-log'); //open ~/Library/Logs/mediref-desktop/log.log (may have to use 'open')
+import { dialog } from 'electron';
+import { autoUpdater } from 'electron-updater';
+import isDev from 'electron-is-dev';
+import log from 'electron-log'; //open ~/Library/Logs/mediref-desktop/log.log (may have to use 'open')
 
-function appUpdater(mainWindow) {
+export function appUpdater(mainWindow: Electron.BrowserWindow) {
+	function sendStatusToWindow(text: string) {
+		if (mainWindow) {
+			// @ts-ignore
+
+			mainWindow.send('Updater', text);
+		}
+	}
+
 	// Don't initiate auto-updates in development and on Linux system
 	// since autoUpdater doesn't work on Linux
 	if (isDev || process.platform === 'linux') {
@@ -14,17 +21,6 @@ function appUpdater(mainWindow) {
 
 	// Log whats happening
 	autoUpdater.logger = log;
-	autoUpdater.logger.transports.file.level = 'info';
-	// log.info('App starting...');
-
-	autoUpdater.logger = log;
-
-	function sendStatusToWindow(text) {
-		// log.info(text);
-		if (mainWindow) {
-			mainWindow.send('Updater', text);
-		}
-	}
 
 	autoUpdater.on('checking-for-update', () => {
 		sendStatusToWindow('Checking for update...');
@@ -35,7 +31,7 @@ function appUpdater(mainWindow) {
 	autoUpdater.on('update-not-available', () => {
 		sendStatusToWindow('Update not available.');
 	});
-	autoUpdater.on('error', (err) => {
+	autoUpdater.on('error', (err: Error) => {
 		log.info(err);
 		sendStatusToWindow(`Error in auto-updater. ${JSON.stringify(err)}`);
 	});
@@ -66,7 +62,3 @@ function appUpdater(mainWindow) {
 	// Init for updates
 	autoUpdater.checkForUpdates();
 }
-
-module.exports = {
-	appUpdater,
-};

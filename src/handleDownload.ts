@@ -7,7 +7,7 @@ function getExt(name: string) {
 	return parts[parts.length - 1];
 }
 
-async function handleDownload(
+export async function handleDownload(
 	_e: any,
 	{ url, downloadLocationPreference, fullName }: { url: string; downloadLocationPreference: string; fullName: string }
 ) {
@@ -38,5 +38,3 @@ async function handleDownload(
 		});
 	}
 }
-
-module.exports = { handleDownload };
