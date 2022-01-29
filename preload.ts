@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from 'electron';
-// window.remote = require('@electron/remote'); //To allow access to main process from webapp. E.g. To retrieve files set when app was not open
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
 	on(eventName: string, callback: (...args: any[]) => void) {

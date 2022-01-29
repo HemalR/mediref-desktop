@@ -12,7 +12,6 @@ import { handleDownload } from './utils/handleDownload';
 import { FileData } from './global';
 import contextMenu from 'electron-context-menu';
 import { filterFileArgs } from './utils/filterFileArgs';
-require('@electron/remote/main').initialize();
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
