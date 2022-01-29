@@ -8,7 +8,7 @@ import log from 'electron-log';
 import { appUpdater } from './appUpdater';
 import platform from './platform';
 import { setMenu } from './menuTemplate';
-import { handleDownload } from './src/handleDownload';
+import { handleDownload } from './utils/handleDownload';
 import { FileData } from './global';
 import contextMenu from 'electron-context-menu';
 require('@electron/remote/main').initialize();

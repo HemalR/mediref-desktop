@@ -13,6 +13,7 @@ export async function handleDownload(
 ) {
 	const win = BrowserWindow.getFocusedWindow();
 	if (!win) return;
+	console.log({ url, downloadLocationPreference, fullName });
 	if (downloadLocationPreference === 'auto') {
 		return await electronDl.download(win, url, {
 			openFolderWhenDone: true,
