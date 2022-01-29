@@ -6,18 +6,18 @@
 		"url": "https://github.com/HemalR/mediref-desktop.git"
 	},
 	"description": "Mediref on your Desktop!",
-	"main": "main.js",
+	"main": "./dist/out-tsc/main.js",
 	"scripts": {
 		"build": "tsc",
-		"start": "npm run build && electron ./dist/main.js",
+		"start": "npm run build && electron dist/out-tsc/main.js",
 		"pack": "electron-builder",
 		"dist": "electron-builder",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"pack_windows": "electron-builder --win",
-		"pack_64": "electron-builder --win --x64",
-		"pack_32": "electron-builder --win --ia32",
-		"pack_mac": "electron-builder --mac",
-		"pub": "electron-builder --mac --win --x64 --ia32 -p always"
+		"pack_windows": "npm run build && electron-builder --win",
+		"pack_64": "npm run build && electron-builder --win --x64",
+		"pack_32": "npm run build && electron-builder --win --ia32",
+		"pack_mac": "npm run build && electron-builder --mac",
+		"pub": "npm run build && electron-builder --mac --win --x64 --ia32 -p always"
 	},
 	"author": "Mediref",
 	"license": "ISC",
@@ -33,12 +33,16 @@
 	"build": {
 		"appId": "com.mediref.desktop",
 		"asar": true,
-		"productName": "Mediref",
-		"copyright": "Copyright © 2021 Mediref",
+		"copyright": "Copyright © 2022 Mediref",
 		"dmg": {
 			"title": "Mediref",
 			"icon": "build/icon.png",
 			"sign": true
+		},
+		"files": {
+			"filter": [
+				"dist/out-tsc/**"
+			]
 		},
 		"mac": {
 			"category": "public.app-category.business",
@@ -69,10 +73,11 @@
 			"target": "nsis"
 		},
 		"nsis": {
-			"oneClick": true,
+			"oneClick": false,
 			"runAfterFinish": true,
-			"allowToChangeInstallationDirectory": false
-		}
+			"allowToChangeInstallationDirectory": true
+		},
+		"productName": "Mediref"
 	},
 	"devDependencies": {
 		"@types/mime": "^2.0.3",
