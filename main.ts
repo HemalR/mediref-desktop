@@ -219,6 +219,12 @@ ipcMain.on('view-pdf', (_event, url, filename) => {
 
 ipcMain.on('app-mounted', () => {
 	if (!mainWindow) return;
+
+	// If there is a global file, send it across
+	if (global.fileToOpen) {
+		mainWindow.webContents.send('open-file', global.fileToOpen);
+	}
+	// Send electron metadata
 	const { name: os, is64Bit } = platform;
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
