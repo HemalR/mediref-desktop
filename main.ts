@@ -75,11 +75,10 @@ function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEm
 }
 
 function handleWindowsArgs(args: string[]) {
-	const [backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = filterFileArgs(args);
-	const pathOfUpload = filePath || backupFilePath;
+	const [filePath, ptName = '', ptEmail = '', recipientEmail = ''] = filterFileArgs(args);
 
-	if (pathOfUpload) {
-		handleFilePath(pathOfUpload, ptName, ptEmail, recipientEmail);
+	if (filePath) {
+		handleFilePath(filePath, ptName, ptEmail, recipientEmail);
 	}
 }
 
