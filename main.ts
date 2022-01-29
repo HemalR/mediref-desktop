@@ -11,6 +11,7 @@ import { setMenu } from './menuTemplate';
 import { handleDownload } from './utils/handleDownload';
 import { FileData } from './global';
 import contextMenu from 'electron-context-menu';
+import { filterFileArgs } from './utils/filterFileArgs';
 require('@electron/remote/main').initialize();
 
 const readdir = promisify(fs.readdir);
@@ -73,8 +74,8 @@ function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEm
 	return fileData;
 }
 
-function handleWindowsArgs(arr: string[]) {
-	const [, backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = arr;
+function handleWindowsArgs(args: string[]) {
+	const [backupFilePath, filePath, ptName = '', ptEmail = '', recipientEmail = ''] = filterFileArgs(args);
 	const pathOfUpload = filePath || backupFilePath;
 
 	if (pathOfUpload) {
@@ -160,19 +161,6 @@ if (!gotTheLock) {
 				mainWindow.restore();
 			}
 			mainWindow.focus();
-			/* 
-				With the electron update, when the command line is used to open Electron while it is already open, the command line
-				args are as follows (index numbered):
-				0. Path to Mediref
-				1. '--allow0file-access-from-files'
-				2. '--original-process-start-time=XXX'
-				3. filpath and the rest of the command line args
-
-				For initial processes (where command line opens Electron while it is closed), args 1 and 2 from above are omitted. The printer
-				driver tries to fix this by sending the file path as argument 1 as well as 2/leaving argument 1 empty. But we need to take
-				into account that there are now 2 injections into the args array rather than just 1 so we deal with it by removing arg 1
-			*/
-			commandLine.splice(1, 1);
 			handleWindowsArgs(commandLine);
 		}
 	});
