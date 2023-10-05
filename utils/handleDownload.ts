@@ -8,12 +8,11 @@ function getExt(name: string) {
 }
 
 export async function handleDownload(
-	_e: any,
+	_e: Electron.IpcMainEvent,
 	{ url, downloadLocationPreference, fullName }: { url: string; downloadLocationPreference: string; fullName: string }
 ) {
 	const win = BrowserWindow.getFocusedWindow();
 	if (!win) return;
-	console.log({ url, downloadLocationPreference, fullName });
 	if (downloadLocationPreference === 'auto') {
 		return await electronDl.download(win, url, {
 			openFolderWhenDone: true,

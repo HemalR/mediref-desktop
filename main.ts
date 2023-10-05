@@ -1,17 +1,17 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-import fs from 'fs';
-import { promisify } from 'util';
-import mime from 'mime';
-import path from 'path';
+import contextMenu from 'electron-context-menu';
 import isDev from 'electron-is-dev';
 import log from 'electron-log';
+import fs from 'fs';
+import mime from 'mime';
+import path from 'path';
+import { promisify } from 'util';
 import { appUpdater } from './appUpdater';
-import platform from './platform';
-import { setMenu } from './menuTemplate';
-import { handleDownload } from './utils/handleDownload';
 import { FileData } from './global';
-import contextMenu from 'electron-context-menu';
+import { setMenu } from './menuTemplate';
+import platform from './platform';
 import { filterFileArgs } from './utils/filterFileArgs';
+import { handleDownload } from './utils/handleDownload';
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -24,7 +24,7 @@ contextMenu({
 			// Only show it when right-clicking text
 			visible: params.selectionText.trim().length > 0,
 			click: () => {
-				shell.openExternal(`https://google.com/search?q=${encodeURIComponent(params.selectionText)}`);
+				shell.openExternal(`https://google.com.au/search?q=${encodeURIComponent(params.selectionText)}`);
 			},
 		},
 	],
@@ -40,16 +40,20 @@ log.transports.file.level = 'info';
 let mainWindow: null | Electron.BrowserWindow = null;
 
 // Declare a global empty object variable to hold file path if a file is opened while the app is closed
+// @ts-ignore
 global.fileToOpen = null;
+// @ts-ignore
 global.pathToHandle = null;
 
 // Clear the global fileToOpen variable once Mediref app renderer process has handled the file
 ipcMain.on('file-handled', () => {
+	// @ts-ignore
 	global.fileToOpen = null;
 });
 
 // Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
 function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEmail = '') {
+	// @ts-ignore
 	global.pathToHandle = filePath;
 	const name = path.basename(filePath);
 	const type = mime.getType(filePath);
@@ -63,6 +67,7 @@ function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEm
 		ptEmail,
 		recipientEmail,
 	};
+	// @ts-ignore
 	global.fileToOpen = fileData;
 	if (mainWindow) {
 		mainWindow.webContents.send('open-file', fileData);
@@ -94,7 +99,7 @@ async function clearTempFolder() {
 			if (!mainWindow) return;
 			mainWindow.webContents.send('Updater', `File: ${filepath}`);
 
-			// Find each files createdAt timestamp. Use the earlier between mtime and birthtime to account for
+			// Find each file's createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
 			const { mtime, birthtime } = await stat(filepath);
 			const createdDate = Math.min(mtime.getTime(), birthtime.getTime());
@@ -126,7 +131,6 @@ function createMainWindow() {
 	});
 	if (platform.isWindows) {
 		handleWindowsArgs(process.argv);
-		clearTempFolder();
 	}
 
 	mainWindow.maximize();
@@ -191,7 +195,7 @@ app.on('window-all-closed', () => {
 	app.quit();
 });
 
-ipcMain.on('view-pdf', (_event, url, filename) => {
+ipcMain.on('view-pdf', (_event, url: string, filename: string) => {
 	const pdfWindow = new BrowserWindow({
 		width: 1024,
 		height: 800,
@@ -207,7 +211,9 @@ ipcMain.on('app-mounted', () => {
 	if (!mainWindow) return;
 
 	// If there is a global file, send it across
+	// @ts-ignore
 	if (global.fileToOpen) {
+		// @ts-ignore
 		mainWindow.webContents.send('open-file', global.fileToOpen);
 	}
 	// Send electron metadata
@@ -216,6 +222,9 @@ ipcMain.on('app-mounted', () => {
 	const basepath = app.getAppPath();
 	mainWindow.webContents.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
 	appUpdater(mainWindow);
+	if (platform.isWindows) {
+		clearTempFolder();
+	}
 });
 
 ipcMain.on('download-file', handleDownload);
@@ -223,7 +232,6 @@ ipcMain.on('download-file', handleDownload);
 // Remotely load a provided url on to the main window (allows for easier use of ngrok)
 ipcMain.on('load-url', (_event, url) => {
 	if (!mainWindow) return;
-
 	mainWindow.loadURL(url);
 });
 
@@ -244,16 +252,4 @@ ipcMain.on('clear-temp', async () => {
 	await clearTempFolder();
 	if (!mainWindow) return;
 	mainWindow.webContents.send('Updater', `Temp folder apparently cleared..?`);
-});
-
-ipcMain.on('aping', async () => {
-	console.log('Async Ping received');
-	if (!mainWindow) return;
-	mainWindow.webContents.send('Updater', `apong`);
-});
-
-ipcMain.on('ping', () => {
-	console.log('Ping received');
-	if (!mainWindow) return;
-	mainWindow.webContents.send('Updater', `pong`);
 });
