@@ -12,6 +12,7 @@ import { setMenu } from './menuTemplate';
 import platform from './platform';
 import { filterFileArgs } from './utils/filterFileArgs';
 import { handleDownload } from './utils/handleDownload';
+import { getWindowState, saveWindowState } from './windowState';
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -122,18 +123,19 @@ async function clearTempFolder() {
 }
 
 function createMainWindow() {
+	const windowState = getWindowState();
+
 	mainWindow = new BrowserWindow({
 		webPreferences: {
 			nodeIntegration: false,
 			preload: __dirname + '/preload.js',
 			spellcheck: true,
 		},
+		...windowState,
 	});
 	if (platform.isWindows) {
 		handleWindowsArgs(process.argv);
 	}
-
-	mainWindow.maximize();
 
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000/new');
@@ -142,6 +144,12 @@ function createMainWindow() {
 		mainWindow.loadURL('https://www.mediref.com.au/new');
 	}
 	setMenu(app);
+
+	mainWindow.on('resize', () => saveWindowState(mainWindow));
+
+	mainWindow.on('move', () => saveWindowState(mainWindow));
+
+	mainWindow.on('closed', () => saveWindowState(mainWindow));
 }
 
 /**
@@ -192,7 +200,14 @@ process.on('uncaughtException', (err) => {
 
 // Quit app if all windows are closed
 app.on('window-all-closed', () => {
-	app.quit();
+	saveWindowState(mainWindow);
+	if (process.platform !== 'darwin') {
+		app.quit();
+	}
+});
+
+app.on('quit', () => {
+	saveWindowState(mainWindow);
 });
 
 ipcMain.on('view-pdf', (_event, url: string, filename: string) => {
