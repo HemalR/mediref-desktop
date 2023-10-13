@@ -4,6 +4,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 	on(eventName: string, callback: (...args: any[]) => void) {
 		ipcRenderer.on(eventName, callback);
 	},
+	once(eventName: string, callback: (...args: any[]) => void) {
+		ipcRenderer.on(eventName, callback);
+	},
 	send: ipcRenderer.send,
 	removeListener: ipcRenderer.removeListener,
 });
