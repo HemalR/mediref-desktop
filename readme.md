@@ -2,6 +2,8 @@ https://www.excelsiorjet.com/kb/34/howto-digitally-sign-executables-and-installe
 
 # Signing
 
+## Manual - Windows generated installers
+
 signtool sign /f certificate-file
 /p password
 /t timestamp-server-URL
@@ -10,6 +12,28 @@ file-to-sign-1 file-to-sign-2 ...
 Example:
 
     C:\temp> signtool sign /f MyCert.p12 /p SeCRetpASsw0rd /t http://timestamp.comodoca.com/authenticode MyApp.exe
+
+## Automatic - Windows installers
+
+1. Set the relevant values in package.json:
+   "win": {
+   "target": {
+   "target": "nsis",
+   "arch": [
+   "x64"
+   ]
+   },
+   "publisherName": "{NAME}",
+   "certificateFile": "./certificates/cert.pfx",
+   "certificatePassword": "{PASSWORD_FROM_ENV}"
+   },
+
+## Automatic - Mac installers
+
+1. Ensure a code signing certificate is present in the system
+   a. Create either at developers.apple.com or using Xcode - a paid account is needed. When generating the certificate request using keychaing, ensure that the email address is the same as the one used for the Apple developer account (Doing so made the certificate automatically trusted, whereas changing the name to the company name was making it not trusted. And manually trusting it was giving the blue checkmark on keychain, but it was throwing errors on Electron Builder when trying to sign the application.)
+   b. Ensure the certificate is present in the system keychain, including the full chain of trust certificates. This may be easiest to do by getting Xcode to code-sign a dummy hello-world application.
+2. During the build process, during the signing step, you should get the identity name equal developer ID. `identityName=Developer ID Application: {name from 1a Certificate request authority}` This means that the certificate being used is one that is intended for Mac installer distribution outside of the App Store.
 
 # Auto-updating
 
