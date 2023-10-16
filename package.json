@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "1.0.10",
+	"version": "2.0.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -68,10 +68,22 @@
 					"description": "PDF files",
 					"role": "Viewer"
 				}
-			]
+			],
+			"target": {
+				"target": "default",
+				"arch": "universal"
+			}
 		},
 		"win": {
-			"target": "nsis"
+			"target": {
+				"target": "nsis",
+				"arch": [
+					"x64"
+				]
+			},
+			"publisherName": "AM Healthcare Pty Ltd",
+			"certificateFile": "./certificates/mediref.pfx",
+			"certificatePassword": "PASSWORD"
 		},
 		"nsis": {
 			"oneClick": false,
