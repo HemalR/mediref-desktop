@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "2.0.0",
+	"version": "2.0.6",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -29,6 +29,7 @@
 		"electron-is-dev": "^2.0.0",
 		"electron-log": "^4.4.8",
 		"electron-updater": "^6.1.4",
+		"lodash": "^4.17.21",
 		"mime": "^3.0.0"
 	},
 	"build": {
@@ -83,7 +84,7 @@
 			},
 			"publisherName": "AM Healthcare Pty Ltd",
 			"certificateFile": "./certificates/mediref.pfx",
-			"certificatePassword": "PASSWORD"
+			"certificatePassword": "6o0NDLWDBfscP&en0T843V0C"
 		},
 		"nsis": {
 			"oneClick": false,
@@ -93,6 +94,7 @@
 		"productName": "Mediref"
 	},
 	"devDependencies": {
+		"@types/lodash": "^4.14.200",
 		"@types/mime": "^3.0.2",
 		"electron": "26.2.4",
 		"electron-builder": "^24.6.4",

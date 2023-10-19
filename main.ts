@@ -148,8 +148,6 @@ function createMainWindow() {
 	mainWindow.on('resize', () => saveWindowState(mainWindow));
 
 	mainWindow.on('move', () => saveWindowState(mainWindow));
-
-	mainWindow.on('closed', () => saveWindowState(mainWindow));
 }
 
 /**
@@ -200,14 +198,7 @@ process.on('uncaughtException', (err) => {
 
 // Quit app if all windows are closed
 app.on('window-all-closed', () => {
-	saveWindowState(mainWindow);
-	if (process.platform !== 'darwin') {
-		app.quit();
-	}
-});
-
-app.on('quit', () => {
-	saveWindowState(mainWindow);
+	app.quit();
 });
 
 ipcMain.on('view-pdf', (_event, url: string, filename: string) => {

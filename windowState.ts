@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
+import { debounce } from 'lodash';
 const path = require('path');
 const fs = require('fs');
 
@@ -7,7 +8,7 @@ const windowStateFile = path.join(userDataPath, 'windowState.json');
 
 type WindowState = { width: number; height: number; x?: number; y?: number };
 
-export function getWindowState(): WindowState {
+function getWindowState(): WindowState {
 	try {
 		const data = fs.readFileSync(windowStateFile, 'utf-8');
 		return JSON.parse(data);
@@ -17,10 +18,16 @@ export function getWindowState(): WindowState {
 	}
 }
 
-export function saveWindowState(mainWindow: null | Electron.BrowserWindow) {
+function saveWindowState(mainWindow: null | Electron.BrowserWindow) {
 	if (mainWindow) {
 		const { width, height, x, y } = mainWindow.getBounds();
 		const windowState: WindowState = { width, height, x, y };
 		fs.writeFileSync(windowStateFile, JSON.stringify(windowState));
+		mainWindow.webContents.send('Updater', `Updated window state saved: ${JSON.stringify(windowState)}`);
 	}
 }
+
+// create debounced version of saveWindowState
+const debouncedSaveWindowState = debounce(saveWindowState, 2000);
+
+export { getWindowState, debouncedSaveWindowState as saveWindowState };
