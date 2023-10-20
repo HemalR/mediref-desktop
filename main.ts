@@ -123,7 +123,7 @@ async function clearTempFolder() {
 }
 
 function createMainWindow() {
-	const windowState = getWindowState();
+	const { maximise, ...windowState } = getWindowState();
 
 	mainWindow = new BrowserWindow({
 		webPreferences: {
@@ -131,8 +131,15 @@ function createMainWindow() {
 			preload: __dirname + '/preload.js',
 			spellcheck: true,
 		},
-		...windowState,
+		// Specify window state if not maximised and hide window if maximised (we will reveal the window after the maximise method is called)
+		...(maximise ? { show: false } : windowState),
 	});
+
+	if (maximise) {
+		mainWindow.maximize();
+		mainWindow.show();
+	}
+
 	if (platform.isWindows) {
 		handleWindowsArgs(process.argv);
 	}
