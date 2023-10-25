@@ -1,18 +1,24 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('ipcRenderer', {
-	on(eventName: string, callback: (...args: any[]) => void) {
-		ipcRenderer.on(eventName, callback);
-	},
-	once(eventName: string, callback: (...args: any[]) => void) {
-		ipcRenderer.on(eventName, callback);
-	},
-	send: ipcRenderer.send,
-	removeListener: ipcRenderer.removeListener,
-});
+const validChannels = ['Updater', 'open-file', 'handle-electron-version'];
 
-// Todo: Migrate to a more specific/narrow use case of contextBridge. See: https://www.electronjs.org/docs/latest/tutorial/context-isolation
 contextBridge.exposeInMainWorld('medirefDesktopAPI', {
+	receive(channel: string, func: (...args: any[]) => void) {
+		if (validChannels.includes(channel)) {
+			// Deliberately strip event as it includes `sender`
+			const subscription = (_event: Electron.IpcRendererEvent, ...args: any[]) => func(...args);
+			ipcRenderer.on(channel, subscription);
+			return () => {
+				ipcRenderer.removeListener(channel, subscription);
+			};
+		}
+	},
+	ping() {
+		ipcRenderer.send('ping');
+	},
+	fileHandled() {
+		ipcRenderer.send('file-handled');
+	},
 	viewPdf(url: string, filename: string) {
 		ipcRenderer.send('view-pdf', url, filename);
 	},
