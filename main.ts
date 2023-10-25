@@ -52,6 +52,14 @@ ipcMain.on('file-handled', () => {
 	global.fileToOpen = null;
 });
 
+// Function to log a message on front end
+function logMessage(message: string) {
+	if (mainWindow) {
+		console.log(mainWindow.webContents.send);
+		mainWindow.webContents.send('Updater', message);
+	}
+}
+
 // Takes in a file path, reads the file, assigns it to the global fileToOpen and then emits an event if window open
 function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEmail = '') {
 	// @ts-ignore
@@ -72,9 +80,6 @@ function handleFilePath(filePath: string, ptName = '', ptEmail = '', recipientEm
 	global.fileToOpen = fileData;
 	if (mainWindow) {
 		mainWindow.webContents.send('open-file', fileData);
-		const statusToSend = `File path to upload: ${filePath}`;
-		// log.info(statusToSend);
-		mainWindow.webContents.send('Updater', statusToSend);
 	}
 	return fileData;
 }
@@ -98,7 +103,7 @@ async function clearTempFolder() {
 		files.forEach(async function (file) {
 			const filepath = path.join(tempDir, file);
 			if (!mainWindow) return;
-			mainWindow.webContents.send('Updater', `File: ${filepath}`);
+			logMessage(`File: ${filepath}`);
 
 			// Find each file's createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
@@ -107,15 +112,13 @@ async function clearTempFolder() {
 			// If older than one day, delete it
 			if (deleteDate > createdDate) {
 				await unlink(filepath);
-				mainWindow.webContents.send('Updater', `Deleted file: ${filepath}`);
+				logMessage(`Deleted file: ${filepath}`);
 			} else {
-				mainWindow.webContents.send('Updater', `Did not delete File: ${filepath}`);
+				logMessage(`Did not delete file: ${filepath}`);
 			}
 		});
 	} catch (err: any) {
-		if (mainWindow) {
-			mainWindow.webContents.send('Updater', `Error clearing temp folder: ${JSON.stringify(err)}`);
-		}
+		logMessage(`Error clearing temp folder: ${JSON.stringify(err)}`);
 		if (err.code === 'ENOENT') {
 			return;
 		}
@@ -187,6 +190,7 @@ app.on('will-finish-launching', () => {
 	app.on('open-file', (event, filePath) => {
 		event.preventDefault();
 		handleFilePath(filePath);
+		logMessage(`Calling open-file event...`);
 	});
 });
 
@@ -234,6 +238,9 @@ ipcMain.on('app-mounted', () => {
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
 	mainWindow.webContents.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
+	logMessage(`App mounted...`);
+	// @ts-ignore
+	logMessage(JSON.stringify(global.fileToOpen));
 	appUpdater(mainWindow);
 	if (platform.isWindows) {
 		clearTempFolder();
@@ -263,6 +270,12 @@ ipcMain.on('load-staging', () => {
 
 ipcMain.on('clear-temp', async () => {
 	await clearTempFolder();
-	if (!mainWindow) return;
-	mainWindow.webContents.send('Updater', `Temp folder apparently cleared..?`);
+	logMessage(`Temp folder apparently cleared..?`);
+});
+
+ipcMain.on('ping', async () => {
+	console.log('Received ping...');
+	// @ts-ignore
+	logMessage(JSON.stringify(global.fileToOpen));
+	logMessage(`Ping pong!`);
 });
