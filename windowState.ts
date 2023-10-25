@@ -23,7 +23,6 @@ function saveWindowState(mainWindow: null | Electron.BrowserWindow) {
 		const { width, height, x, y } = mainWindow.getBounds();
 		const windowState: WindowState = { width, height, x, y, maximise: mainWindow.isMaximized() };
 		fs.writeFileSync(windowStateFile, JSON.stringify(windowState));
-		mainWindow.webContents.send('Updater', `Updated window state saved: ${JSON.stringify(windowState)}`);
 	}
 }
 
