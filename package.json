@@ -20,7 +20,7 @@
 	"author": "Mediref",
 	"license": "ISC",
 	"dependencies": {
-		"electron-context-menu": "^2.3.0",
+		"electron-context-menu": "^2.5.2",
 		"electron-dl": "^3.0.2",
 		"electron-is-dev": "^1.2.0",
 		"electron-log": "^4.2.4",
