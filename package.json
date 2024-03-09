@@ -21,7 +21,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"electron-context-menu": "^2.3.0",
-		"electron-dl": "^3.0.2",
+		"electron-dl": "^3.5.2",
 		"electron-is-dev": "^1.2.0",
 		"electron-log": "^4.2.4",
 		"electron-updater": "^4.3.5",
