@@ -53,7 +53,7 @@ ipcMain.on('file-handled', () => {
 });
 
 // Function to log a message on front end
-function logMessage(message: string) {
+function logMessageOnClient(message: string) {
 	if (mainWindow) {
 		console.log(mainWindow.webContents.send);
 		mainWindow.webContents.send('Updater', message);
@@ -103,7 +103,7 @@ async function clearTempFolder() {
 		files.forEach(async function (file) {
 			const filepath = path.join(tempDir, file);
 			if (!mainWindow) return;
-			logMessage(`File: ${filepath}`);
+			logMessageOnClient(`File: ${filepath}`);
 
 			// Find each file's createdAt timestamp. Use the earlier between mtime and birthtime to account for
 			// situations where birthtime reverts to ctime. See https://nodejs.org/api/fs.html#statsbirthtime
@@ -112,13 +112,13 @@ async function clearTempFolder() {
 			// If older than one day, delete it
 			if (deleteDate > createdDate) {
 				await unlink(filepath);
-				logMessage(`Deleted file: ${filepath}`);
+				logMessageOnClient(`Deleted file: ${filepath}`);
 			} else {
-				logMessage(`Did not delete file: ${filepath}`);
+				logMessageOnClient(`Did not delete file: ${filepath}`);
 			}
 		});
 	} catch (err: any) {
-		logMessage(`Error clearing temp folder: ${JSON.stringify(err)}`);
+		logMessageOnClient(`Error clearing temp folder: ${JSON.stringify(err)}`);
 		if (err.code === 'ENOENT') {
 			return;
 		}
@@ -190,7 +190,7 @@ app.on('will-finish-launching', () => {
 	app.on('open-file', (event, filePath) => {
 		event.preventDefault();
 		handleFilePath(filePath);
-		logMessage(`Calling open-file event...`);
+		logMessageOnClient(`Calling open-file event...`);
 	});
 });
 
@@ -238,9 +238,6 @@ ipcMain.on('app-mounted', () => {
 	const electronVersion = app.getVersion();
 	const basepath = app.getAppPath();
 	mainWindow.webContents.send('handle-electron-version', { version: electronVersion, os, is64Bit, path: basepath });
-	logMessage(`App mounted...`);
-	// @ts-ignore
-	logMessage(JSON.stringify(global.fileToOpen));
 	appUpdater(mainWindow);
 	if (platform.isWindows) {
 		clearTempFolder();
@@ -270,12 +267,12 @@ ipcMain.on('load-staging', () => {
 
 ipcMain.on('clear-temp', async () => {
 	await clearTempFolder();
-	logMessage(`Temp folder apparently cleared..?`);
+	logMessageOnClient(`Temp folder cleared...`);
 });
 
 ipcMain.on('ping', async () => {
 	console.log('Received ping...');
 	// @ts-ignore
-	logMessage(JSON.stringify(global.fileToOpen));
-	logMessage(`Ping pong!`);
+	logMessageOnClient(JSON.stringify(global.fileToOpen));
+	logMessageOnClient(`Ping pong!`);
 });

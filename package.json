@@ -1,6 +1,6 @@
 {
 	"name": "mediref-desktop",
-	"version": "2.0.6",
+	"version": "2.0.21",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
@@ -35,7 +35,8 @@
 	"build": {
 		"appId": "com.mediref.desktop",
 		"asar": true,
-		"copyright": "Copyright © 2022 Mediref",
+		"productName": "Mediref",
+		"copyright": "Copyright © 2024 Mediref",
 		"dmg": {
 			"title": "Mediref",
 			"icon": "build/icon.png",
@@ -84,14 +85,14 @@
 			},
 			"publisherName": "AM Healthcare Pty Ltd",
 			"certificateFile": "./certificates/mediref.pfx",
-			"certificatePassword": "6o0NDLWDBfscP&en0T843V0C"
+			"certificatePassword": "6o0NDLWDBfscP&en0T843V0C",
+			"timeStampServer": "http://timestamp.sectigo.com"
 		},
 		"nsis": {
 			"oneClick": false,
 			"runAfterFinish": true,
 			"allowToChangeInstallationDirectory": true
-		},
-		"productName": "Mediref"
+		}
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.200",
