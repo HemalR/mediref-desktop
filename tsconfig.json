@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"strict": true,
+		"noImplicitAny": true,
+		"sourceMap": false,
+		"outDir": "./dist/out-tsc",
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"*": ["node_modules/*"]
+		},
+		"strictNullChecks": true,
+		"skipLibCheck": true
+	},
+	"include": ["utils/**/*", "*.ts", "global.d.ts", "main.js"]
+}

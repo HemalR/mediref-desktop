@@ -1,41 +1,51 @@
 {
 	"name": "mediref-desktop",
-	"version": "1.0.9",
+	"version": "2.0.21",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HemalR/mediref-desktop.git"
 	},
 	"description": "Mediref on your Desktop!",
-	"main": "main.js",
+	"main": "./dist/out-tsc/main.js",
 	"scripts": {
-		"start": "electron main.js",
+		"build": "tsc",
+		"start": "npm run build && electron dist/out-tsc/main.js",
+		"file": "npm run build && electron dist/out-tsc/main.js \"\" \"C:\\Users\\Mediref\\OneDrive\\Desktop\\test-doc.pdf\" \"Nicolas\" \"email@nic.com\" \"info@mediref.com.au\"",
+		"file1": "npm run build && electron dist/out-tsc/main.js \"\" \"C:\\Users\\Mediref\\OneDrive\\Desktop\\test-doc.pdf\" \"C:\\Users\\Mediref\\OneDrive\\Desktop\\test-doc.pdf\" \"email@nic.com\" \"info@mediref.com.au\"",
 		"pack": "electron-builder",
 		"dist": "electron-builder",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"pack_windows": "electron-builder --win",
-		"pack_64": "electron-builder --win --x64",
-		"pack_mac": "electron-builder --mac",
-		"pub": "electron-builder --mac --win --x64 --ia32 -p always"
+		"pack_windows": "npm run build && electron-builder --win",
+		"pack_64": "npm run build && electron-builder --win --x64",
+		"pack_32": "npm run build && electron-builder --win --ia32",
+		"pack_mac": "npm run build && electron-builder --mac",
+		"pub": "npm run build && electron-builder --mac --win --x64 --ia32 -p always"
 	},
 	"author": "Mediref",
 	"license": "ISC",
 	"dependencies": {
-		"electron-context-menu": "^2.3.0",
-		"electron-dl": "^3.0.2",
-		"electron-is-dev": "^1.2.0",
-		"electron-log": "^4.2.4",
-		"electron-updater": "^4.3.5",
-		"mime": "^2.4.6"
+		"electron-context-menu": "^3.6.1",
+		"electron-dl": "^3.5.0",
+		"electron-is-dev": "^2.0.0",
+		"electron-log": "^4.4.8",
+		"electron-updater": "^6.1.4",
+		"lodash": "^4.17.21",
+		"mime": "^3.0.0"
 	},
 	"build": {
 		"appId": "com.mediref.desktop",
 		"asar": true,
 		"productName": "Mediref",
-		"copyright": "Copyright © 2021 Mediref",
+		"copyright": "Copyright © 2024 Mediref",
 		"dmg": {
 			"title": "Mediref",
 			"icon": "build/icon.png",
 			"sign": true
+		},
+		"files": {
+			"filter": [
+				"dist/out-tsc/**"
+			]
 		},
 		"mac": {
 			"category": "public.app-category.business",
@@ -60,19 +70,37 @@
 					"description": "PDF files",
 					"role": "Viewer"
 				}
-			]
+			],
+			"target": {
+				"target": "default",
+				"arch": "universal"
+			}
 		},
 		"win": {
-			"target": "nsis"
+			"target": {
+				"target": "nsis",
+				"arch": [
+					"x64"
+				]
+			},
+			"publisherName": "AM Healthcare Pty Ltd",
+			"certificateFile": "./certificates/mediref.pfx",
+			"certificatePassword": "6o0NDLWDBfscP&en0T843V0C",
+			"timeStampServer": "http://timestamp.sectigo.com"
 		},
 		"nsis": {
-			"oneClick": true,
+			"oneClick": false,
 			"runAfterFinish": true,
-			"allowToChangeInstallationDirectory": false
+			"allowToChangeInstallationDirectory": true
 		}
 	},
 	"devDependencies": {
-		"electron": "^11.2.1",
-		"electron-builder": "^22.9.1"
+		"@types/lodash": "^4.14.200",
+		"@types/mime": "^3.0.2",
+		"electron": "26.2.4",
+		"electron-builder": "^24.6.4",
+		"eslint": "^8.50.0",
+		"prettier": "^3.0.3",
+		"typescript": "^5.2.2"
 	}
 }
